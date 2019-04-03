@@ -1,6 +1,10 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"os"
+
+	"github.com/spf13/cobra"
+)
 
 func checkFunc(cmd *cobra.Command, args []string) {
 	if cfgFile == "" {
@@ -49,6 +53,7 @@ func checkFunc(cmd *cobra.Command, args []string) {
 
 	if err != nil {
 		cmd.Println("ERROR parsing the configuration file.\n", err.Error())
+		os.Exit(1)
 		return
 	}
 
