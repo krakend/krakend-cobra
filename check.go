@@ -1,8 +1,16 @@
 package cmd
 
 import (
+	"context"
+	"errors"
 	"os"
+	"time"
 
+	"github.com/devopsfaith/krakend/config"
+	"github.com/devopsfaith/krakend/logging"
+	"github.com/devopsfaith/krakend/proxy"
+	krakendgin "github.com/devopsfaith/krakend/router/gin"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
 
@@ -57,5 +65,31 @@ func checkFunc(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	if checkGinRoutes {
+		if err := runRouter(v); err != nil {
+			cmd.Println("ERROR testing the configuration file.\n", err.Error())
+			os.Exit(1)
+			return
+		}
+	}
+
 	cmd.Println("Syntax OK!")
+}
+
+func runRouter(cfg config.ServiceConfig) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = errors.New(r.(string))
+		}
+	}()
+
+	gin.SetMode(gin.ReleaseMode)
+	cfg.Debug = cfg.Debug || debug
+	if port != 0 {
+		cfg.Port = port
+	}
+
+	ctx, _ := context.WithTimeout(context.Background(), time.Second)
+	krakendgin.DefaultFactory(proxy.DefaultFactory(logging.NoOp), logging.NoOp).NewWithContext(ctx).Run(cfg)
+	return nil
 }
