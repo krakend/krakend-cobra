@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	cfgFile string
-	debug   bool
-	port    int
-	parser  config.Parser
-	run     func(config.ServiceConfig)
+	cfgFile        string
+	debug          bool
+	port           int
+	checkGinRoutes bool
+	parser         config.Parser
+	run            func(config.ServiceConfig)
 
 	rootCmd = &cobra.Command{
 		Use:   "krakend",
@@ -50,6 +51,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable the debug")
 
 	rootCmd.AddCommand(checkCmd)
+	checkCmd.PersistentFlags().BoolVarP(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
 
 	rootCmd.AddCommand(runCmd)
 	runCmd.PersistentFlags().IntVarP(&port, "port", "p", 0, "Listening port for the http service")
