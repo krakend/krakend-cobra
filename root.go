@@ -51,7 +51,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable the debug")
 
 	rootCmd.AddCommand(checkCmd)
-	checkCmd.PersistentFlags().BoolVarP(&checkGinRoutes, "gin-routes", "g", false, "Check the endpoint patterns on a gin router")
+	checkCmd.PersistentFlags().BoolVarP(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
 
 	rootCmd.AddCommand(runCmd)
 	runCmd.PersistentFlags().IntVarP(&port, "port", "p", 0, "Listening port for the http service")
