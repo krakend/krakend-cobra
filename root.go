@@ -16,6 +16,10 @@ var (
 	checkGinRoutes bool
 	parser         config.Parser
 	run            func(config.ServiceConfig)
+	DefaultRoot    Root
+	RootCommand    Command
+	RunCommand     Command
+	CheckCommand   Command
 
 	rootCmd = &cobra.Command{
 		Use:   "krakend",
@@ -45,16 +49,18 @@ func init() {
 	if err != nil {
 		fmt.Println("decode error:", err)
 	}
-	rootCmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
+	RootCommand = NewCommand(rootCmd)
+	RootCommand.Cmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
 
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "Path to the configuration filename")
-	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable the debug")
+	RootCommand.FlagSet.StringVarP(&cfgFile, "config", "c", "", "Path to the configuration filename")
+	RootCommand.FlagSet.BoolVarP(&debug, "debug", "d", false, "Enable the debug")
 
-	rootCmd.AddCommand(checkCmd)
-	checkCmd.PersistentFlags().BoolVarP(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
+	CheckCommand = NewCommand(checkCmd)
+	CheckCommand.FlagSet.BoolVarP(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
 
-	rootCmd.AddCommand(runCmd)
-	runCmd.PersistentFlags().IntVarP(&port, "port", "p", 0, "Listening port for the http service")
+	RunCommand = NewCommand(runCmd)
+	RunCommand.FlagSet.IntVarP(&port, "port", "p", 0, "Listening port for the http service")
+	DefaultRoot = NewRoot(RootCommand, CheckCommand, RunCommand)
 }
 
 const encodedLogo = "ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCmA3TU1GJyBgWU1NJyAgICAgICAgICAgICAgICAgIGA3TU0gICAgICAgICAgICAgICAgICAgICAgICAgYDdNTSIiIlliLiAgIAogIE1NICAgLk0nICAgICAgICAgICAgICAgICAgICAgIE1NICAgICAgICAgICAgICAgICAgICAgICAgICAgTU0gICAgYFliLiAKICBNTSAuZCIgICAgIGA3TWIsb2Q4ICw2IlliLiAgICBNTSAgLE1QJy5nUCJZYSBgN01NcE1NTWIuICAgIE1NICAgICBgTWIgCiAgTU1NTU0uICAgICAgIE1NJyAiJzgpICAgTU0gICAgTU0gO1kgICxNJyAgIFliICBNTSAgICBNTSAgICBNTSAgICAgIE1NIAogIE1NICBWTUEgICAgICBNTSAgICAgLHBtOU1NICAgIE1NO01tICA4TSIiIiIiIiAgTU0gICAgTU0gICAgTU0gICAgICxNUCAKICBNTSAgIGBNTS4gICAgTU0gICAgOE0gICBNTSAgICBNTSBgTWIuWU0uICAgICwgIE1NICAgIE1NICAgIE1NICAgICxkUCcgCi5KTU1MLiAgIE1NYi4uSk1NTC4gIGBNb285XllvLi5KTU1MLiBZQS5gTWJtbWQnLkpNTUwgIEpNTUwuLkpNTW1tbWRQJyAgIApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK"
