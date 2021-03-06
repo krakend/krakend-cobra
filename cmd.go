@@ -18,6 +18,7 @@ type Executor func(config.ServiceConfig)
 // Execute sets up the cmd package with the received configuration parser and executor and delegates
 // the CLI execution to the cobra lib
 func Execute(configParser config.Parser, f Executor) {
+	DefaultRoot.Build()
 	DefaultRoot.Execute(configParser, f)
 }
 
@@ -63,6 +64,10 @@ func NewCommand(command *cobra.Command, flags ...FlagBuilder) Command {
 	return Command{Cmd: command, Flags: flags, once: new(sync.Once)}
 }
 
+func (c *Command) AddFlag(f FlagBuilder) {
+	c.Flags = append(c.Flags, f)
+}
+
 func (c *Command) BuildFlags() {
 	c.once.Do(func() {
 		for i := range c.Flags {
@@ -73,7 +78,6 @@ func (c *Command) BuildFlags() {
 
 func NewRoot(root Command, subCommands ...Command) Root {
 	r := Root{Command: root, SubCommands: subCommands}
-	r.buildSubCommands()
 	return r
 }
 
@@ -83,9 +87,11 @@ type Root struct {
 	once        *sync.Once
 }
 
-func (r *Root) buildSubCommands() {
+func (r *Root) Build() {
 	r.once.Do(func() {
+		r.BuildFlags()
 		for i := range r.SubCommands {
+			r.SubCommands[i].BuildFlags()
 			r.Cmd.AddCommand(r.SubCommands[i].Cmd)
 		}
 	})
