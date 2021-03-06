@@ -18,8 +18,12 @@ type Executor func(config.ServiceConfig)
 // Execute sets up the cmd package with the received configuration parser and executor and delegates
 // the CLI execution to the cobra lib
 func Execute(configParser config.Parser, f Executor) {
-	DefaultRoot.Build()
-	DefaultRoot.Execute(configParser, f)
+	ExecuteRoot(configParser, f, DefaultRoot)
+}
+
+func ExecuteRoot(configParser config.Parser, f Executor, root Root) {
+	root.Build()
+	root.Execute(configParser, f)
 }
 
 type FlagBuilder func(*cobra.Command)
