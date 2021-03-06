@@ -49,17 +49,17 @@ func init() {
 	if err != nil {
 		fmt.Println("decode error:", err)
 	}
-	RootCommand = NewCommand(rootCmd)
+	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration filename")
+	debugFlag := BoolFlagBuilder(&debug, "debug", "d", false, "Enable the debug")
+	RootCommand = NewCommand(rootCmd, cfgFlag, debugFlag)
 	RootCommand.Cmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
 
-	RootCommand.FlagSet.StringVarP(&cfgFile, "config", "c", "", "Path to the configuration filename")
-	RootCommand.FlagSet.BoolVarP(&debug, "debug", "d", false, "Enable the debug")
+	ginRoutesFlag := BoolFlagBuilder(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
+	CheckCommand = NewCommand(checkCmd, ginRoutesFlag)
 
-	CheckCommand = NewCommand(checkCmd)
-	CheckCommand.FlagSet.BoolVarP(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
+	portFlag := IntFlagBuilder(&port, "port", "p", 0, "Listening port for the http service")
+	RunCommand = NewCommand(runCmd, portFlag)
 
-	RunCommand = NewCommand(runCmd)
-	RunCommand.FlagSet.IntVarP(&port, "port", "p", 0, "Listening port for the http service")
 	DefaultRoot = NewRoot(RootCommand, CheckCommand, RunCommand)
 }
 
