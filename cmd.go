@@ -77,7 +77,7 @@ func (c *Command) BuildFlags() {
 }
 
 func NewRoot(root Command, subCommands ...Command) Root {
-	r := Root{Command: root, SubCommands: subCommands}
+	r := Root{Command: root, SubCommands: subCommands, once: new(sync.Once)}
 	return r
 }
 
