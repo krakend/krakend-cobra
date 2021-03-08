@@ -26,6 +26,14 @@ func ExecuteRoot(configParser config.Parser, f Executor, root Root) {
 	root.Execute(configParser, f)
 }
 
+func GetConfigFlag() string {
+	return cfgFile
+}
+
+func GetDebugFlag() bool {
+	return debug
+}
+
 type FlagBuilder func(*cobra.Command)
 
 func StringFlagBuilder(dst *string, long, short, defaultValue, help string) FlagBuilder {
