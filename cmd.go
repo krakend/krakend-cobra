@@ -88,6 +88,10 @@ func (c *Command) BuildFlags() {
 	})
 }
 
+func (c *Command) AddSubCommand(cmd *cobra.Command) {
+	c.Cmd.AddCommand(cmd)
+}
+
 func NewRoot(root Command, subCommands ...Command) Root {
 	r := Root{Command: root, SubCommands: subCommands, once: new(sync.Once)}
 	return r
