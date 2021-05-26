@@ -4,8 +4,8 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/devopsfaith/krakend/config"
-	"github.com/devopsfaith/krakend/core"
+	"github.com/luraproject/lura/config"
+	"github.com/luraproject/lura/core"
 	"github.com/spf13/cobra"
 )
 

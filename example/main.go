@@ -3,12 +3,12 @@ package main
 import (
 	"os"
 
-	"github.com/devopsfaith/krakend-cobra"
-	"github.com/devopsfaith/krakend-viper"
-	"github.com/devopsfaith/krakend/config"
-	"github.com/devopsfaith/krakend/logging"
-	"github.com/devopsfaith/krakend/proxy"
-	"github.com/devopsfaith/krakend/router/gin"
+	cmd "github.com/devopsfaith/krakend-cobra"
+	viper "github.com/devopsfaith/krakend-viper"
+	"github.com/luraproject/lura/config"
+	"github.com/luraproject/lura/logging"
+	"github.com/luraproject/lura/proxy"
+	"github.com/luraproject/lura/router/gin"
 )
 
 func main() {
