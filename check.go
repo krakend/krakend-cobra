@@ -82,6 +82,7 @@ func checkFunc(cmd *cobra.Command, args []string) {
 
 func dumpEndpoint(endpoint *config.EndpointConfig, cmd *cobra.Command) {
 	cmd.Printf("\t%s%s%s %s%s\n", methodColor(endpoint.Method), endpoint.Method, colorCyan, endpoint.Endpoint, colorReset)
+	cmd.Printf("\t\tTimeout: %s\n", endpoint.Timeout.String())
 	cmd.Printf("\t\tCacheTTL: %s\n", endpoint.CacheTTL.String())
 	cmd.Printf("\t\tConcurrent calls: %d\n", endpoint.ConcurrentCalls)
 	cmd.Printf("\t\tQueryString: %v\n", endpoint.QueryString)
