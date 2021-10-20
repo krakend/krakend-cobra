@@ -11,7 +11,7 @@ import (
 
 var (
 	cfgFile        string
-	debug          bool
+	debug          int
 	port           int
 	checkGinRoutes bool
 	parser         config.Parser
@@ -50,7 +50,7 @@ func init() {
 		fmt.Println("decode error:", err)
 	}
 	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration filename")
-	debugFlag := BoolFlagBuilder(&debug, "debug", "d", false, "Enable the debug")
+	debugFlag := CountFlagBuilder(&debug, "debug", "d", "Enable the debug")
 	RootCommand = NewCommand(rootCmd, cfgFlag, debugFlag)
 	RootCommand.Cmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
 
