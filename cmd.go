@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/luraproject/lura/config"
+	"github.com/luraproject/lura/v2/config"
 	"github.com/spf13/cobra"
 )
 
