@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"errors"
+	"net/http"
 	"os"
 	"time"
 
@@ -37,38 +38,28 @@ func checkFunc(cmd *cobra.Command, args []string) {
 	if debug {
 
 		cmd.Printf("%sGlobal settings%s\n", colorGreen, colorReset)
-		cmd.Printf("\tCacheTTL: %s\n", v.CacheTTL.String())
+		cmd.Printf("\tName: %s\n", v.Name)
 		cmd.Printf("\tPort: %d\n", v.Port)
-		cmd.Printf("\tDefault backends: %v\n", v.Host)
-
-		cmd.Printf("%sExtra configurations (%d components):%s\n", colorGreen, len(v.ExtraConfig), colorReset)
-		for k, e := range v.ExtraConfig {
-			cmd.Printf("  %s: %v\n", k, e)
+		cmd.Printf("\tDefault cache TTL: %s\n", v.CacheTTL.String())
+		cmd.Printf("\tDefault timeout: %s\n", v.Timeout.String())
+		cmd.Println("\tDefault backend hosts:")
+		for _, h := range v.Host {
+			cmd.Printf("\t\t%s\n", h)
+		}
+		if len(v.Host) == 0 {
+			cmd.Println("\t\t-")
 		}
 
-		cmd.Printf("%sConfigured endpoints (%d):%s\n", colorGreen, len(v.Endpoints), colorReset)
+		cmd.Printf("%s%d global component configuration(s):%s\n", colorGreen, len(v.ExtraConfig), colorReset)
+		for k, e := range v.ExtraConfig {
+			cmd.Printf("\t%s%s:%s\n", colorYellow, k, colorReset)
+			cmd.Printf("\t\t%+v\n", e)
+		}
+		cmd.Println("")
+
+		cmd.Printf("%s%d API endpoints:%s\n", colorGreen, len(v.Endpoints), colorReset)
 		for _, endpoint := range v.Endpoints {
-			cmd.Printf("\tEndpoint: %s%s %s%s, CacheTTL: %s, Concurrent: %d, QueryString: %v\n",
-				colorCyan, endpoint.Method, endpoint.Endpoint, colorReset, endpoint.CacheTTL.String(),
-				endpoint.ConcurrentCalls, endpoint.QueryString)
-
-			cmd.Printf("\tExtra configurations (%d components):\n", len(endpoint.ExtraConfig))
-			for k, e := range endpoint.ExtraConfig {
-				cmd.Printf("\t  %s: %v\n", k, e)
-			}
-
-			cmd.Printf("\tConnecting to %d backends:\n", len(endpoint.Backend))
-			for _, backend := range endpoint.Backend {
-				cmd.Printf("\t\tURL: %s%s%s, Method: %s\n", colorMagenta, backend.URLPattern, colorReset, backend.Method)
-				cmd.Printf("\t\t\tTimeout: %s, Target: %s, Mapping: %v, Deny: %v, Allow: %v, Group: %v\n",
-					backend.Timeout, backend.Target, backend.Mapping, backend.DenyList, backend.AllowList,
-					backend.Group)
-				cmd.Printf("\t\t\tHosts: %v\n", backend.Host)
-				cmd.Printf("\t\t\tExtra (%d):\n", len(backend.ExtraConfig))
-				for k, e := range backend.ExtraConfig {
-					cmd.Printf("\t\t\t  %s: %v\n", k, e)
-				}
-			}
+			dumpEndpoint(endpoint, cmd)
 		}
 	}
 
@@ -87,6 +78,57 @@ func checkFunc(cmd *cobra.Command, args []string) {
 	}
 
 	cmd.Printf("%sSyntax OK!%s\n", colorGreen, colorReset)
+}
+
+func dumpEndpoint(endpoint *config.EndpointConfig, cmd *cobra.Command) {
+	cmd.Printf("\t%s%s%s %s%s\n", methodColor(endpoint.Method), endpoint.Method, colorCyan, endpoint.Endpoint, colorReset)
+	cmd.Printf("\t\tCacheTTL: %s\n", endpoint.CacheTTL.String())
+	cmd.Printf("\t\tConcurrent calls: %d\n", endpoint.ConcurrentCalls)
+	cmd.Printf("\t\tQueryString: %v\n", endpoint.QueryString)
+
+	cmd.Printf("\t\t%s%d endpoint component configuration(s):%s\n", colorGreen, len(endpoint.ExtraConfig), colorReset)
+	for k, e := range endpoint.ExtraConfig {
+		cmd.Printf("\t\t\t%s%s:%s\n", colorYellow, k, colorReset)
+		cmd.Printf("\t\t\t\t%+v\n", e)
+	}
+
+	cmd.Printf("\t\t%sConnecting to %d backend(s):%s\n", colorGreen, len(endpoint.Backend), colorReset)
+	for _, backend := range endpoint.Backend {
+		dumpBackend(backend, cmd)
+	}
+}
+
+func dumpBackend(backend *config.Backend, cmd *cobra.Command) {
+	cmd.Printf("\t\t\t%s%s%s %s%s\n", methodColor(backend.Method), backend.Method, colorCyan, backend.URLPattern, colorReset)
+	cmd.Printf("\t\t\tTimeout: %s\n", backend.Timeout.String())
+	cmd.Printf("\t\t\tTarget: %s\n", backend.Target)
+	cmd.Printf("\t\t\tDeny: %v, Allow: %v\n", backend.DenyList, backend.AllowList)
+	cmd.Printf("\t\t\tGroup: %s\n", backend.Group)
+	cmd.Printf("\t\t\tHosts: %v\n", backend.Host)
+	cmd.Printf("\t\t\t%s%d backend component configuration(s):%s\n", colorGreen, len(backend.ExtraConfig), colorReset)
+	for k, e := range backend.ExtraConfig {
+		cmd.Printf("\t\t\t\t%s%s:%s\n", colorYellow, k, colorReset)
+		cmd.Printf("\t\t\t\t\t%+v\n", e)
+	}
+	cmd.Println("")
+}
+
+var methodColors = map[string]string{
+	http.MethodGet:     colorBlue,
+	http.MethodPost:    colorCyan,
+	http.MethodPut:     colorYellow,
+	http.MethodDelete:  colorRed,
+	http.MethodPatch:   colorGreen,
+	http.MethodHead:    colorMagenta,
+	http.MethodOptions: colorWhite,
+}
+
+func methodColor(method string) string {
+	m, ok := methodColors[method]
+	if !ok {
+		return colorGreen
+	}
+	return m
 }
 
 func runRouter(cfg config.ServiceConfig) (err error) {
