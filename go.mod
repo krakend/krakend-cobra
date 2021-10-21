@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/devopsfaith/krakend-viper/v2 v2.0.0-20211020152843-fef58b415f68
 	github.com/gin-gonic/gin v1.7.4
-	github.com/luraproject/lura v1.4.1
 	github.com/luraproject/lura/v2 v2.0.0-dev
 	github.com/spf13/cobra v0.0.5
 )
