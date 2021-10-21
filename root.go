@@ -16,10 +16,13 @@ var (
 	checkGinRoutes bool
 	parser         config.Parser
 	run            func(config.ServiceConfig)
-	DefaultRoot    Root
-	RootCommand    Command
-	RunCommand     Command
-	CheckCommand   Command
+
+	checkDumpPrefix = "\t"
+
+	DefaultRoot  Root
+	RootCommand  Command
+	RunCommand   Command
+	CheckCommand Command
 
 	rootCmd = &cobra.Command{
 		Use:   "krakend",
@@ -55,7 +58,8 @@ func init() {
 	RootCommand.Cmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
 
 	ginRoutesFlag := BoolFlagBuilder(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
-	CheckCommand = NewCommand(checkCmd, ginRoutesFlag)
+	prefixFlag := StringFlagBuilder(&checkDumpPrefix, "indent", "i", checkDumpPrefix, "Indentation of the check dump")
+	CheckCommand = NewCommand(checkCmd, ginRoutesFlag, prefixFlag)
 
 	portFlag := IntFlagBuilder(&port, "port", "p", 0, "Listening port for the http service")
 	RunCommand = NewCommand(runCmd, portFlag)
