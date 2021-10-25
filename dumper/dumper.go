@@ -89,7 +89,7 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 		return errors.New("no endpoints defined")
 	}
 
-	c.cmd.Printf("%s%d API endpoints:%s\n", ColorGreen, len(v.Endpoints), ColorReset)
+	c.cmd.Printf("%s%d API endpoint(s):%s\n", ColorGreen, len(v.Endpoints), ColorReset)
 	for _, endpoint := range v.Endpoints {
 		c.dumpEndpoint(endpoint)
 	}
@@ -162,12 +162,12 @@ func (c Dumper) dumpExtraConfig(cfg config.ExtraConfig, prefix string) {
 			switch s := cfg[k].(type) {
 			case map[string]interface{}:
 				for i, v := range s {
-					c.cmd.Printf("\t%s%s: %+v\n", prefix, i, v)
+					c.cmd.Printf("\t%s%s%+v\n", prefix, i, v)
 				}
 			case []interface{}:
-				c.cmd.Printf("\t%s: %+v\n", prefix, s)
+				c.cmd.Printf("\t%s%+v\n", prefix, s)
 			default:
-				c.cmd.Printf("\t%s: %+v\n", prefix, s)
+				c.cmd.Printf("\t%s%+v\n", prefix, s)
 			}
 		}
 	}
