@@ -35,13 +35,13 @@ type Diff struct {
 func (d Descriptor) Compare(other Descriptor) []Diff {
 	diffs := []Diff{}
 
-	for k, expect := range d.Deps {
-		have, ok := other.Deps[k]
+	for pkgName, expectedVersion := range d.Deps {
+		v, ok := other.Deps[pkgName]
 		if !ok {
 			continue
 		}
-		if have != expect {
-			diffs = append(diffs, Diff{Name: k, Expected: expect, Have: have})
+		if v != expectedVersion {
+			diffs = append(diffs, Diff{Name: pkgName, Expected: expectedVersion, Have: v})
 		}
 	}
 
@@ -58,7 +58,7 @@ func (d Descriptor) Compare(other Descriptor) []Diff {
 }
 
 // Describe reads a go.sum and returns a descriptor for the build or an error
-func Describe(r io.Reader) (Descriptor, error) {
+func Describe(r io.Reader, goVersion string) (Descriptor, error) {
 	content, err := parseSumFile(r)
 	if err != nil {
 		return Descriptor{}, err
@@ -75,7 +75,7 @@ func Describe(r io.Reader) (Descriptor, error) {
 		deps[parts[0]] = cleanedVersion
 	}
 	return Descriptor{
-		Go:   "",
+		Go:   goVersion,
 		Deps: deps,
 	}, nil
 }

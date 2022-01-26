@@ -16,16 +16,14 @@ func pluginFunc(cmd *cobra.Command, args []string) {
 	}
 	defer f.Close()
 
-	desc, err := plugin.Describe(f)
+	desc, err := plugin.Describe(f, goVersion)
 	if err != nil {
 		cmd.Println(err)
 		os.Exit(1)
 		return
 	}
-	desc.Go = goVersion
 
-	diffs := plugin.Compare(plugin.Local(), desc)
-
+	diffs := plugin.Local().Compare(desc)
 	if len(diffs) == 0 {
 		cmd.Println("No incompatibilities found!")
 		return
