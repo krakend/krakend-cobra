@@ -52,6 +52,7 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 		c.cmd.Printf("%sDisable compression: %v\n", c.checkDumpPrefix, v.DisableCompression)
 		c.cmd.Printf("%sMax idle connections: %d\n", c.checkDumpPrefix, v.MaxIdleConns)
 		c.cmd.Printf("%sMax idle connections per host: %d\n", c.checkDumpPrefix, v.MaxIdleConnsPerHost)
+		c.cmd.Printf("%sSequential start: %b\n", c.checkDumpPrefix, v.SequentialStart)
 	}
 
 	if v.TLS != nil {
@@ -93,7 +94,39 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 	for _, endpoint := range v.Endpoints {
 		c.dumpEndpoint(endpoint)
 	}
+
+	c.cmd.Printf("%s%d async agent(s):%s\n", ColorGreen, len(v.AsyncAgents), ColorReset)
+	for _, agent := range v.AsyncAgents {
+		c.dumpAgent(agent)
+	}
 	return nil
+}
+
+func (c Dumper) dumpAgent(agent *config.AsyncAgent) {
+	c.cmd.Printf("%s- %s%s%s\n", c.checkDumpPrefix, ColorCyan, agent.Name, ColorReset)
+
+	if c.verboseLevel > 1 {
+		c.cmd.Printf("%sEncoding: %s\n", c.checkDumpPrefix, agent.Encoding)
+
+		c.cmd.Printf("%sConsumer Timeout: %s\n", c.checkDumpPrefix, agent.Consumer.Timeout.String())
+		c.cmd.Printf("%sConsumer Workers: %d\n", c.checkDumpPrefix, agent.Consumer.Workers)
+		c.cmd.Printf("%sConsumer Topic: %s\n", c.checkDumpPrefix, agent.Consumer.Topic)
+		c.cmd.Printf("%sConsumer Max Rate: %f\n", c.checkDumpPrefix, agent.Consumer.MaxRate)
+
+		c.cmd.Printf("%sConnection Max Retries: %d\n", c.checkDumpPrefix, agent.Connection.MaxRetries)
+		c.cmd.Printf("%sConnection Backoff Strategy: %s\n", c.checkDumpPrefix, agent.Connection.BackoffStrategy)
+		c.cmd.Printf("%sConnection Health Interval: %s\n", c.checkDumpPrefix, agent.Connection.HealthInterval.String())
+	}
+
+	if c.verboseLevel > 1 || len(agent.ExtraConfig) > 0 {
+		c.cmd.Printf("%s%s%d agent component configuration(s):%s\n", c.checkDumpPrefix, ColorGreen, len(agent.ExtraConfig), ColorReset)
+		c.dumpExtraConfig(agent.ExtraConfig, c.checkDumpPrefix)
+	}
+
+	c.cmd.Printf("%s%sConnecting to %d backend(s):%s\n", c.checkDumpPrefix, ColorGreen, len(agent.Backend), ColorReset)
+	for _, backend := range agent.Backend {
+		c.dumpBackend(backend)
+	}
 }
 
 func (c Dumper) dumpEndpoint(endpoint *config.EndpointConfig) {
@@ -162,12 +195,12 @@ func (c Dumper) dumpExtraConfig(cfg config.ExtraConfig, prefix string) {
 			switch s := cfg[k].(type) {
 			case map[string]interface{}:
 				for i, v := range s {
-					c.cmd.Printf("\t%s%s%+v\n", prefix, i, v)
+					c.cmd.Printf("\t%s%s: %+v\n", prefix, i, v)
 				}
 			case []interface{}:
-				c.cmd.Printf("\t%s%+v\n", prefix, s)
+				c.cmd.Printf("\t%s: %+v\n", prefix, s)
 			default:
-				c.cmd.Printf("\t%s%+v\n", prefix, s)
+				c.cmd.Printf("\t%s: %+v\n", prefix, s)
 			}
 		}
 	}
