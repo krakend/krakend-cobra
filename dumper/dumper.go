@@ -52,7 +52,7 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 		c.cmd.Printf("%sDisable compression: %v\n", c.checkDumpPrefix, v.DisableCompression)
 		c.cmd.Printf("%sMax idle connections: %d\n", c.checkDumpPrefix, v.MaxIdleConns)
 		c.cmd.Printf("%sMax idle connections per host: %d\n", c.checkDumpPrefix, v.MaxIdleConnsPerHost)
-		c.cmd.Printf("%sSequential start: %b\n", c.checkDumpPrefix, v.SequentialStart)
+		c.cmd.Printf("%sSequential start: %t\n", c.checkDumpPrefix, v.SequentialStart)
 	}
 
 	if v.TLS != nil {
