@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"time"
 
@@ -15,8 +17,12 @@ import (
 	krakendgin "github.com/luraproject/lura/v2/router/gin"
 
 	"github.com/gin-gonic/gin"
+	"github.com/santhosh-tekuri/jsonschema/v5"
+	_ "github.com/santhosh-tekuri/jsonschema/v5/httploader"
 	"github.com/spf13/cobra"
 )
+
+var SchemaURL = "https://www.krakend.io/schema/v3.json"
 
 func errorMsg(content string) string {
 	return dumper.ColorRed + content + dumper.ColorReset
@@ -29,6 +35,35 @@ func checkFunc(cmd *cobra.Command, args []string) {
 	}
 
 	cmd.Printf("Parsing configuration file: %s\n", cfgFile)
+	data, err := ioutil.ReadFile(cfgFile)
+	if err != nil {
+		cmd.Println(errorMsg("ERROR reading the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+		os.Exit(1)
+		return
+	}
+
+	if schemaValidation {
+		var raw interface{}
+		if err := json.Unmarshal(data, &raw); err != nil {
+			cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+			os.Exit(1)
+			return
+		}
+
+		sch, err := jsonschema.Compile(SchemaURL)
+		if err != nil {
+			cmd.Println(errorMsg("ERROR compiling the schema:") + fmt.Sprintf("\t%s\n", err.Error()))
+			os.Exit(1)
+			return
+		}
+
+		if err = sch.Validate(raw); err != nil {
+			cmd.Println(errorMsg("ERROR linting the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+			os.Exit(1)
+			return
+		}
+	}
+
 	v, err := parser.Parse(cfgFile)
 	if err != nil {
 		cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
