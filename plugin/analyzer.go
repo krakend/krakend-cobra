@@ -13,6 +13,7 @@ import (
 // Descriptor lists all the deps and versions required by a binary/plugin
 type Descriptor struct {
 	Go   string
+	Libc string
 	Deps map[string]string
 }
 
@@ -20,6 +21,7 @@ type Descriptor struct {
 func Local() Descriptor {
 	return Descriptor{
 		Go:   core.GoVersion,
+		Libc: core.GlibcVersion,
 		Deps: getBuildInfo(),
 	}
 }
@@ -54,11 +56,18 @@ func (d Descriptor) Compare(other Descriptor) []Diff {
 		diffs = tmp
 	}
 
+	if d.Libc != other.Libc {
+		tmp := make([]Diff, len(diffs))
+		copy(tmp[1:], diffs)
+		tmp[0] = Diff{Name: "libc", Expected: d.Libc, Have: other.Libc}
+		diffs = tmp
+	}
+
 	return diffs
 }
 
 // Describe reads a go.sum and returns a descriptor for the build or an error
-func Describe(r io.Reader, goVersion string) (Descriptor, error) {
+func Describe(r io.Reader, goVersion, libcVersion string) (Descriptor, error) {
 	content, err := parseSumFile(r)
 	if err != nil {
 		return Descriptor{}, err
@@ -77,6 +86,7 @@ func Describe(r io.Reader, goVersion string) (Descriptor, error) {
 	return Descriptor{
 		Go:   goVersion,
 		Deps: deps,
+		Libc: libcVersion,
 	}, nil
 }
 

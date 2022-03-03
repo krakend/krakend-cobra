@@ -16,7 +16,7 @@ func pluginFunc(cmd *cobra.Command, args []string) {
 	}
 	defer f.Close()
 
-	desc, err := plugin.Describe(f, goVersion)
+	desc, err := plugin.Describe(f, goVersion, libcVersion)
 	if err != nil {
 		cmd.Println(err)
 		os.Exit(1)

@@ -10,15 +10,17 @@ import (
 )
 
 var (
-	cfgFile        string
-	debug          int
-	port           int
-	checkGinRoutes bool
-	parser         config.Parser
-	run            func(config.ServiceConfig)
+	cfgFile          string
+	debug            int
+	port             int
+	checkGinRoutes   bool
+	schemaValidation bool
+	parser           config.Parser
+	run              func(config.ServiceConfig)
 
 	goSum           = "./go.sum"
 	goVersion       = core.GoVersion
+	libcVersion     = core.GlibcVersion
 	checkDumpPrefix = "\t"
 
 	DefaultRoot   Root
@@ -38,7 +40,7 @@ var (
 		Long:    "Validates that the active configuration file has a valid syntax to run the service.\nChange the configuration file by using the --config flag",
 		Run:     checkFunc,
 		Aliases: []string{"validate"},
-		Example: "krakend check -d -c config.json",
+		Example: "krakend check -d -l -c config.json",
 	}
 
 	runCmd = &cobra.Command{
@@ -64,20 +66,22 @@ func init() {
 		fmt.Println("decode error:", err)
 	}
 	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration filename")
-	debugFlag := CountFlagBuilder(&debug, "debug", "d", "Enable the debug")
+	debugFlag := CountFlagBuilder(&debug, "debug", "d", "Enables the debug")
 	RootCommand = NewCommand(rootCmd)
 	RootCommand.Cmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
 
 	ginRoutesFlag := BoolFlagBuilder(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
 	prefixFlag := StringFlagBuilder(&checkDumpPrefix, "indent", "i", checkDumpPrefix, "Indentation of the check dump")
-	CheckCommand = NewCommand(checkCmd, cfgFlag, debugFlag, ginRoutesFlag, prefixFlag)
+	schemaValidationFlag := BoolFlagBuilder(&schemaValidation, "lint", "l", schemaValidation, "Enables the linting against the official KrakenD JSON schema")
+	CheckCommand = NewCommand(checkCmd, cfgFlag, debugFlag, ginRoutesFlag, prefixFlag, schemaValidationFlag)
 
 	portFlag := IntFlagBuilder(&port, "port", "p", 0, "Listening port for the http service")
 	RunCommand = NewCommand(runCmd, cfgFlag, debugFlag, portFlag)
 
 	goSumFlag := StringFlagBuilder(&goSum, "sum", "s", goSum, "Path to the go.sum file to analize")
-	goVersionFlag := StringFlagBuilder(&goVersion, "version", "v", goVersion, "The version of the go compiler used for your plugin")
-	PluginCommand = NewCommand(pluginCmd, goSumFlag, goVersionFlag)
+	goVersionFlag := StringFlagBuilder(&goVersion, "go", "g", goVersion, "The version of the go compiler used for your plugin")
+	libcVersionFlag := StringFlagBuilder(&libcVersion, "libc", "l", "", "Version of the libc library used")
+	PluginCommand = NewCommand(pluginCmd, goSumFlag, goVersionFlag, libcVersionFlag)
 
 	DefaultRoot = NewRoot(RootCommand, CheckCommand, RunCommand, PluginCommand)
 }
