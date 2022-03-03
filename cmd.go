@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/luraproject/lura/config"
+	"github.com/luraproject/lura/v2/config"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +31,7 @@ func GetConfigFlag() string {
 }
 
 func GetDebugFlag() bool {
-	return debug
+	return debug > 0
 }
 
 type FlagBuilder func(*cobra.Command)
@@ -63,6 +63,12 @@ func Float64FlagBuilder(dst *float64, long, short string, defaultValue float64, 
 func IntFlagBuilder(dst *int, long, short string, defaultValue int, help string) FlagBuilder {
 	return func(cmd *cobra.Command) {
 		cmd.PersistentFlags().IntVarP(dst, long, short, defaultValue, help)
+	}
+}
+
+func CountFlagBuilder(dst *int, long, short string, help string) FlagBuilder {
+	return func(cmd *cobra.Command) {
+		cmd.PersistentFlags().CountVarP(dst, long, short, help)
 	}
 }
 
