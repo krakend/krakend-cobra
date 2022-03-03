@@ -44,6 +44,8 @@ github.com/devopsfaith/flatmap v0.0.0-20200601181759-8521186182fc h1:WM1VdC8LW8G
 github.com/devopsfaith/flatmap v0.0.0-20200601181759-8521186182fc/go.mod h1:J9Y/58s7wx7HbHT3i4UKNwLGuBB9qCf0/JUdEFGDPmA=
 github.com/devopsfaith/krakend-viper/v2 v2.0.0-20211020152843-fef58b415f68 h1:IjWucnPa9ODL2k+iJV96dCgUD5KJbS4Q/uY3591kPpo=
 github.com/devopsfaith/krakend-viper/v2 v2.0.0-20211020152843-fef58b415f68/go.mod h1:9ng5WbNPGzQkKuBfm9gceddqg9Drdm9jWz7UwykoSv4=
+github.com/devopsfaith/krakend-viper/v2 v2.0.0-rc h1:uIVQgrwHRevkcIz/e75yRYB2tWWzj0szxj57Sv3rfS8=
+github.com/devopsfaith/krakend-viper/v2 v2.0.0-rc/go.mod h1:JxIuH7YLoDcrbzSphUBBlUl7to5op91Md6NdNQ5vEVo=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
@@ -152,6 +154,8 @@ github.com/leodido/go-urn v1.2.1 h1:BqpAaACuzVSgi/VLzGZIobT2z4v53pjosyNd9Yv6n/w=
 github.com/leodido/go-urn v1.2.1/go.mod h1:zt4jvISO2HfUBqxjfIshjdMTYS56ZS/qv49ictyFfxY=
 github.com/luraproject/lura/v2 v2.0.0-20220302222845-7d288feccf15 h1:AJ80D0Anx1QdIC5QBH91e+O2dx62a2DyZONUgDWVUaU=
 github.com/luraproject/lura/v2 v2.0.0-20220302222845-7d288feccf15/go.mod h1:1FhL+5a9uH6o7zMNstXlcjznL5yt2lZ9Q8efanmvw9w=
+github.com/luraproject/lura/v2 v2.0.0-rc h1:gJiYBj6C24U9t916MoPlNHqXbXjfVg3rglcPxiGaEA4=
+github.com/luraproject/lura/v2 v2.0.0-rc/go.mod h1:1FhL+5a9uH6o7zMNstXlcjznL5yt2lZ9Q8efanmvw9w=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.1 h1:ZC2Vc7/ZFkGmsVC9KvOjumD+G5lXy2RtTKyzRKO2BQ4=
 github.com/magiconair/properties v1.8.1/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=

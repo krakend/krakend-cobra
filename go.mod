@@ -3,9 +3,10 @@ module github.com/devopsfaith/krakend-cobra/v2
 go 1.17
 
 require (
-	github.com/devopsfaith/krakend-viper/v2 v2.0.0-20211020152843-fef58b415f68
+	github.com/devopsfaith/krakend-viper/v2 v2.0.0-rc
 	github.com/gin-gonic/gin v1.7.7
-	github.com/luraproject/lura/v2 v2.0.0-dev
+	github.com/luraproject/lura/v2 v2.0.0-rc
+	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v0.0.5
 )
 
@@ -27,7 +28,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
-	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0 // indirect
 	github.com/spf13/afero v1.1.2 // indirect
 	github.com/spf13/cast v1.3.0 // indirect
 	github.com/spf13/jwalterweatherman v1.0.0 // indirect
@@ -46,5 +46,3 @@ require (
 )
 
 replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43
-
-replace github.com/luraproject/lura/v2 v2.0.0-dev => github.com/luraproject/lura/v2 v2.0.0-20220302222845-7d288feccf15
