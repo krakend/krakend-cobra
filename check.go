@@ -35,14 +35,15 @@ func checkFunc(cmd *cobra.Command, args []string) {
 	}
 
 	cmd.Printf("Parsing configuration file: %s\n", cfgFile)
-	data, err := ioutil.ReadFile(cfgFile)
-	if err != nil {
-		cmd.Println(errorMsg("ERROR reading the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-		os.Exit(1)
-		return
-	}
 
 	if schemaValidation {
+		data, err := ioutil.ReadFile(cfgFile)
+		if err != nil {
+			cmd.Println(errorMsg("ERROR reading the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+			os.Exit(1)
+			return
+		}
+
 		var raw interface{}
 		if err := json.Unmarshal(data, &raw); err != nil {
 			cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
@@ -104,7 +105,8 @@ func runRouter(cfg config.ServiceConfig) (err error) {
 		cfg.Port = port
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	krakendgin.DefaultFactory(proxy.DefaultFactory(logging.NoOp), logging.NoOp).NewWithContext(ctx).Run(cfg)
+	cancel()
 	return nil
 }
