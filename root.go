@@ -56,7 +56,7 @@ var (
 		Short:   "Checks your plugin dependencies are compatible.",
 		Long:    "Checks your plugin dependencies are compatible.",
 		Run:     pluginFunc,
-		Example: "krakend check-plugin -v 1.17.0 -s ./go.sum",
+		Example: "krakend check-plugin -g 1.17.0 -s ./go.sum",
 	}
 )
 
