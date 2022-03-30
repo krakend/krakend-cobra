@@ -50,20 +50,21 @@ func (d Descriptor) Compare(other Descriptor) []Diff {
 	sort.Slice(diffs, func(i, j int) bool { return diffs[i].Name < diffs[j].Name })
 
 	if d.Go != other.Go {
-		tmp := make([]Diff, len(diffs))
-		copy(tmp[1:], diffs)
-		tmp[0] = Diff{Name: "go", Expected: d.Go, Have: other.Go}
-		diffs = tmp
+		diffs = prependDiff(diffs, Diff{Name: "go", Expected: d.Go, Have: other.Go})
 	}
 
 	if d.Libc != other.Libc {
-		tmp := make([]Diff, len(diffs))
-		copy(tmp[1:], diffs)
-		tmp[0] = Diff{Name: "libc", Expected: d.Libc, Have: other.Libc}
-		diffs = tmp
+		diffs = prependDiff(diffs, Diff{Name: "libc", Expected: d.Libc, Have: other.Libc})
 	}
 
 	return diffs
+}
+
+func prependDiff(diffs []Diff, diff Diff) []Diff {
+	tmp := make([]Diff, len(diffs)+1)
+	copy(tmp[1:], diffs)
+	tmp[0] = diff
+	return tmp
 }
 
 // Describe reads a go.sum and returns a descriptor for the build or an error
