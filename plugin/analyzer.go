@@ -50,14 +50,14 @@ func (d Descriptor) Compare(other Descriptor) []Diff {
 	sort.Slice(diffs, func(i, j int) bool { return diffs[i].Name < diffs[j].Name })
 
 	if d.Go != other.Go {
-		tmp := make([]Diff, len(diffs))
+		tmp := make([]Diff, len(diffs)+1)
 		copy(tmp[1:], diffs)
 		tmp[0] = Diff{Name: "go", Expected: d.Go, Have: other.Go}
 		diffs = tmp
 	}
 
 	if d.Libc != other.Libc {
-		tmp := make([]Diff, len(diffs))
+		tmp := make([]Diff, len(diffs)+1)
 		copy(tmp[1:], diffs)
 		tmp[0] = Diff{Name: "libc", Expected: d.Libc, Have: other.Libc}
 		diffs = tmp
