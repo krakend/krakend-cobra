@@ -34,6 +34,10 @@ func GetDebugFlag() bool {
 	return debug > 0
 }
 
+func GetConfigParser() config.Parser {
+	return parser
+}
+
 type FlagBuilder func(*cobra.Command)
 
 func StringFlagBuilder(dst *string, long, short, defaultValue, help string) FlagBuilder {
