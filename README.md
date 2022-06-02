@@ -14,8 +14,8 @@ package main
 import (
 	"os"
 
-	"github.com/devopsfaith/krakend-cobra/v2"
-	"github.com/devopsfaith/krakend-viper/v2"
+	"github.com/krakendio/krakend-cobra/v2"
+	"github.com/krakendio/krakend-viper/v2"
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/logging"
 	"github.com/luraproject/lura/v2/proxy"
@@ -34,23 +34,22 @@ func main() {
 
 ## Available commands
 
-The `cmd` package includes two commands: `check` and `run`. 
+The `cmd` package includes four commands: `check`, `check-plugin`, `help` and `run`.
 
 1. *check* validates the received config file.
-2. *run* executes the passed executor once the received flags overwrite the parsed config.
+2. *check-plugin* validates the dependencies shared between the binary and a plugin.
+3. *help* displays details about any command.
+4. *run* executes the passed executor once the received flags overwrite the parsed config.
 
 ```
 $ ./krakend
-
-`7MMF' `YMM'                  `7MM                         `7MM"""Yb.
-  MM   .M'                      MM                           MM    `Yb.
-  MM .d"     `7Mb,od8 ,6"Yb.    MM  ,MP'.gP"Ya `7MMpMMMb.    MM     `Mb
-  MMMMM.       MM' "'8)   MM    MM ;Y  ,M'   Yb  MM    MM    MM      MM
-  MM  VMA      MM     ,pm9MM    MM;Mm  8M""""""  MM    MM    MM     ,MP
-  MM   `MM.    MM    8M   MM    MM `Mb.YM.    ,  MM    MM    MM    ,dP'
-.JMML.   MMb..JMML.  `Moo9^Yo..JMML. YA.`Mbmmd'.JMML  JMML..JMMmmmdP'
-_______________________________________________________________________
-
+ ╓▄█                          ▄▄▌                               ╓██████▄µ
+▐███  ▄███╨▐███▄██H╗██████▄  ║██▌ ,▄███╨ ▄██████▄  ▓██▌█████▄  ███▀╙╙▀▀███╕
+▐███▄███▀  ▐█████▀"╙▀▀"╙▀███ ║███▄███┘  ███▀""▀███ ████▀╙▀███H ███     ╙███
+▐██████▌   ▐███⌐  ,▄████████M║██████▄  ║██████████M███▌   ███H ███     ,███
+▐███╨▀███µ ▐███   ███▌  ,███M║███╙▀███  ███▄```▄▄` ███▌   ███H ███,,,╓▄███▀
+▐███  ╙███▄▐███   ╙█████████M║██▌  ╙███▄`▀███████╨ ███▌   ███H █████████▀
+                     ``                     `'`
 Version: undefined
 
 The API Gateway builder
@@ -59,12 +58,14 @@ Usage:
   krakend [command]
 
 Available Commands:
-  check       Validates that the configuration file is valid.
-  run         Run the KrakenD server.
+  check        Validates that the configuration file is valid.
+  check-plugin Checks your plugin dependencies are compatible.
+  help         Help about any command
+  run          Runs the KrakenD server.
 
 Flags:
-  -c, --config string   Path to the configuration filename
-  -d, --debug           Enable the debug
+  -h, --help   help for krakend
 
 Use "krakend [command] --help" for more information about a command.
+
 ```
