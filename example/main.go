@@ -12,10 +12,8 @@ import (
 )
 
 func main() {
-
 	cmd.Execute(viper.New(), func(serviceConfig config.ServiceConfig) {
 		logger, _ := logging.NewLogger("DEBUG", os.Stdout, "")
 		gin.DefaultFactory(proxy.DefaultFactory(logger), logger).New().Run(serviceConfig)
 	})
-
 }
