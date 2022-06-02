@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/devopsfaith/krakend-cobra/v2/plugin"
+	"github.com/krakendio/krakend-cobra/v2/plugin"
 	"github.com/spf13/cobra"
 )
 

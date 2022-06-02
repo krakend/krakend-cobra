@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	cmd "github.com/devopsfaith/krakend-cobra/v2"
-	viper "github.com/devopsfaith/krakend-viper/v2"
+	cmd "github.com/krakendio/krakend-cobra/v2"
+	viper "github.com/krakendio/krakend-viper/v2"
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/logging"
 	"github.com/luraproject/lura/v2/proxy"
