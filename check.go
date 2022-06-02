@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/devopsfaith/krakend-cobra/v2/dumper"
+	"github.com/krakendio/krakend-cobra/v2/dumper"
 
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/logging"
