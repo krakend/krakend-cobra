@@ -4,8 +4,8 @@ go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.7
-	github.com/krakendio/krakend-viper/v2 v2.0.0-20220602174943-1b0451efbd02
-	github.com/luraproject/lura/v2 v2.0.0-20220601150625-abb94fb9730d
+	github.com/krakendio/krakend-viper/v2 v2.0.1
+	github.com/luraproject/lura/v2 v2.0.5
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v0.0.5
 )
@@ -20,7 +20,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/krakendio/flatmap v0.0.0-20220531185225-4cb0ad6fbedd // indirect
+	github.com/krakendio/flatmap v1.1.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
