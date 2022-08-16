@@ -22,6 +22,7 @@ var (
 	goVersion       = core.GoVersion
 	libcVersion     = core.GlibcVersion
 	checkDumpPrefix = "\t"
+	gogetEnabled    = false
 
 	DefaultRoot   Root
 	RootCommand   Command
@@ -81,7 +82,8 @@ func init() {
 	goSumFlag := StringFlagBuilder(&goSum, "sum", "s", goSum, "Path to the go.sum file to analize")
 	goVersionFlag := StringFlagBuilder(&goVersion, "go", "g", goVersion, "The version of the go compiler used for your plugin")
 	libcVersionFlag := StringFlagBuilder(&libcVersion, "libc", "l", "", "Version of the libc library used")
-	PluginCommand = NewCommand(pluginCmd, goSumFlag, goVersionFlag, libcVersionFlag)
+	gogetFlag := BoolFlagBuilder(&gogetEnabled, "format", "f", false, "Dump the commands to update")
+	PluginCommand = NewCommand(pluginCmd, goSumFlag, goVersionFlag, libcVersionFlag, gogetFlag)
 
 	DefaultRoot = NewRoot(RootCommand, CheckCommand, RunCommand, PluginCommand)
 }
