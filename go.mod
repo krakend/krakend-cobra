@@ -8,6 +8,7 @@ require (
 	github.com/luraproject/lura/v2 v2.0.5
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v0.0.5
+	golang.org/x/mod v0.1.0
 )
 
 require (

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/luraproject/lura/v2/core"
+	"golang.org/x/mod/semver"
 )
 
 // Descriptor lists all the deps and versions required by a binary/plugin
@@ -79,7 +80,7 @@ func Describe(r io.Reader, goVersion, libcVersion string) (Descriptor, error) {
 		parts := strings.Split(dep, " ")
 		cleanedVersion := cleanVersion(parts[1])
 
-		if deps[parts[0]] >= cleanedVersion {
+		if semver.Compare(deps[parts[0]], cleanedVersion) >= 0 {
 			continue
 		}
 		deps[parts[0]] = cleanedVersion

@@ -30,6 +30,20 @@ func pluginFunc(cmd *cobra.Command, args []string) {
 	}
 
 	cmd.Println(len(diffs), "incompatibility(ies) found...")
+	if gogetEnabled {
+		for _, diff := range diffs {
+			if diff.Name != "go" && diff.Name != "libc" {
+				cmd.Printf("go get %s@%s\n", diff.Name, diff.Expected)
+				continue
+			}
+
+			cmd.Println(diff.Name)
+			cmd.Println("\thave:", diff.Have)
+			cmd.Println("\twant:", diff.Expected)
+		}
+		os.Exit(1)
+	}
+
 	for _, diff := range diffs {
 		cmd.Println(diff.Name)
 		cmd.Println("\thave:", diff.Have)
