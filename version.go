@@ -6,5 +6,7 @@ import (
 )
 
 func versionFunc(cmd *cobra.Command, _ []string) {
-	cmd.Println(core.KrakendVersion)
+	cmd.Println("KrakenD Version:", core.KrakendVersion)
+	cmd.Println("Go Version:", core.GoVersion)
+	cmd.Println("Glibc Version:", core.GlibcVersion)
 }
