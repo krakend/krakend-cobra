@@ -78,6 +78,9 @@ func Describe(r io.Reader, goVersion, libcVersion string) (Descriptor, error) {
 	deps := map[string]string{}
 	for _, dep := range content {
 		parts := strings.Split(dep, " ")
+		if len(parts) < 2 {
+			continue
+		}
 		cleanedVersion := cleanVersion(parts[1])
 
 		if semver.Compare(deps[parts[0]], cleanedVersion) >= 0 {
