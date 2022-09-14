@@ -33,7 +33,7 @@ var (
 
 	rootCmd = &cobra.Command{
 		Use:   "krakend",
-		Short: "The API Gateway builder",
+		Short: "KrakenD is a high-performance API gateway that helps you publish, secure, control, and monitor your services",
 	}
 
 	checkCmd = &cobra.Command{
@@ -56,9 +56,9 @@ var (
 	pluginCmd = &cobra.Command{
 		Use:     "check-plugin",
 		Short:   "Checks your plugin dependencies are compatible.",
-		Long:    "Checks your plugin dependencies are compatible.",
+		Long:    "Checks your plugin dependencies are compatible and proposes commands to update your dependencies.",
 		Run:     pluginFunc,
-		Example: "krakend check-plugin -g 1.17.0 -s ./go.sum",
+		Example: "krakend check-plugin -g 1.19.0 -s ./go.sum -f",
 	}
 
 	versionCmd = &cobra.Command{
@@ -76,13 +76,13 @@ func init() {
 		fmt.Println("decode error:", err)
 	}
 	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration filename")
-	debugFlag := CountFlagBuilder(&debug, "debug", "d", "Enables the debug")
+	debugFlag := CountFlagBuilder(&debug, "debug", "d", "Enables the debug endpoint")
 	RootCommand = NewCommand(rootCmd)
 	RootCommand.Cmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
 
-	ginRoutesFlag := BoolFlagBuilder(&checkGinRoutes, "test-gin-routes", "t", false, "Test the endpoint patterns against a real gin router on selected port")
+	ginRoutesFlag := BoolFlagBuilder(&checkGinRoutes, "test-gin-routes", "t", false, "Tests the endpoint patterns against a real gin router on the selected port")
 	prefixFlag := StringFlagBuilder(&checkDumpPrefix, "indent", "i", checkDumpPrefix, "Indentation of the check dump")
-	schemaValidationFlag := BoolFlagBuilder(&schemaValidation, "lint", "l", schemaValidation, "Enables the linting against the official KrakenD JSON schema")
+	schemaValidationFlag := BoolFlagBuilder(&schemaValidation, "lint", "l", schemaValidation, "Enables the linting against the official online KrakenD JSON schema")
 	CheckCommand = NewCommand(checkCmd, cfgFlag, debugFlag, ginRoutesFlag, prefixFlag, schemaValidationFlag)
 
 	portFlag := IntFlagBuilder(&port, "port", "p", 0, "Listening port for the http service")
@@ -91,7 +91,7 @@ func init() {
 	goSumFlag := StringFlagBuilder(&goSum, "sum", "s", goSum, "Path to the go.sum file to analize")
 	goVersionFlag := StringFlagBuilder(&goVersion, "go", "g", goVersion, "The version of the go compiler used for your plugin")
 	libcVersionFlag := StringFlagBuilder(&libcVersion, "libc", "l", "", "Version of the libc library used")
-	gogetFlag := BoolFlagBuilder(&gogetEnabled, "format", "f", false, "Dump the commands to update")
+	gogetFlag := BoolFlagBuilder(&gogetEnabled, "format", "f", false, "Shows fix commands to update your dependencies")
 	PluginCommand = NewCommand(pluginCmd, goSumFlag, goVersionFlag, libcVersionFlag, gogetFlag)
 
 	VersionCommand = NewCommand(versionCmd)
