@@ -14,11 +14,11 @@ func pluginFunc(cmd *cobra.Command, _ []string) {
 		os.Exit(1)
 		return
 	}
-	defer f.Close()
 
 	desc, err := plugin.Describe(f, goVersion, libcVersion)
 	if err != nil {
 		cmd.Println(err)
+		f.Close()
 		os.Exit(1)
 		return
 	}
@@ -26,6 +26,7 @@ func pluginFunc(cmd *cobra.Command, _ []string) {
 	diffs := plugin.Local().Compare(desc)
 	if len(diffs) == 0 {
 		cmd.Println("No incompatibilities found!")
+		f.Close()
 		return
 	}
 
@@ -41,6 +42,7 @@ func pluginFunc(cmd *cobra.Command, _ []string) {
 			cmd.Println("\thave:", diff.Have)
 			cmd.Println("\twant:", diff.Expected)
 		}
+		f.Close()
 		os.Exit(1)
 	}
 
@@ -49,5 +51,6 @@ func pluginFunc(cmd *cobra.Command, _ []string) {
 		cmd.Println("\thave:", diff.Have)
 		cmd.Println("\twant:", diff.Expected)
 	}
+	f.Close()
 	os.Exit(1)
 }
