@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func runFunc(cmd *cobra.Command, args []string) {
+func runFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
 		cmd.Println("Please, provide the path to your config file")
 		return

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func pluginFunc(cmd *cobra.Command, args []string) {
+func pluginFunc(cmd *cobra.Command, _ []string) {
 	f, err := os.Open(goSum)
 	if err != nil {
 		cmd.Println(err)
