@@ -70,7 +70,7 @@ func IntFlagBuilder(dst *int, long, short string, defaultValue int, help string)
 	}
 }
 
-func CountFlagBuilder(dst *int, long, short string, help string) FlagBuilder {
+func CountFlagBuilder(dst *int, long, short, help string) FlagBuilder {
 	return func(cmd *cobra.Command) {
 		cmd.PersistentFlags().CountVarP(dst, long, short, help)
 	}
