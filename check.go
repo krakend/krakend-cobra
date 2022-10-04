@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"time"
 
@@ -37,7 +36,7 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 	cmd.Printf("Parsing configuration file: %s\n", cfgFile)
 
 	if schemaValidation {
-		data, err := ioutil.ReadFile(cfgFile)
+		data, err := os.ReadFile(cfgFile)
 		if err != nil {
 			cmd.Println(errorMsg("ERROR reading the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
 			os.Exit(1)
