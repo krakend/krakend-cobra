@@ -28,7 +28,7 @@ func errorMsg(content string) string {
 	return dumper.ColorRed + content + dumper.ColorReset
 }
 
-func checkFunc(cmd *cobra.Command, args []string) {
+func checkFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
 		cmd.Println(errorMsg("Please, provide the path to your config file"))
 		return
