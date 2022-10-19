@@ -1,7 +1,6 @@
 package dumper
 
 import (
-	"errors"
 	"net/http"
 	"sort"
 
@@ -84,10 +83,6 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 	if c.verboseLevel > 1 || len(v.ExtraConfig) > 0 {
 		c.cmd.Printf("%s%d global component configuration(s):%s\n", ColorGreen, len(v.ExtraConfig), ColorReset)
 		c.dumpExtraConfig(v.ExtraConfig, "")
-	}
-
-	if len(v.Endpoints) == 0 {
-		return errors.New("no endpoints defined")
 	}
 
 	c.cmd.Printf("%s%d API endpoint(s):%s\n", ColorGreen, len(v.Endpoints), ColorReset)
