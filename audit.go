@@ -14,6 +14,7 @@ import (
 func auditFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
 		cmd.Println(errorMsg("Please, provide the path to your config file"))
+		os.Exit(1)
 		return
 	}
 
@@ -27,15 +28,14 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 	rulesToExclude = strings.ReplaceAll(rulesToExclude, " ", "")
 	severitiesToInclude = strings.ReplaceAll(severitiesToInclude, " ", "")
 
-	rules := []string{}
+	rules := strings.Split(rulesToExclude, ",")
 
 	if rulesToExcludePath != "" {
 		b, err := os.ReadFile(rulesToExcludePath)
 		if err != nil {
 			cmd.Println(errorMsg("ERROR parsing the ignore file:") + fmt.Sprintf("\t%s\n", err.Error()))
 		} else {
-			for _, line := range strings.Split(string(b), "\n") {
-				line = strings.ReplaceAll(line, " ", "")
+			for _, line := range strings.Split(strings.ReplaceAll(string(b), " ", ""), "\n") {
 				if line == "" {
 					continue
 				}
@@ -46,7 +46,7 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 
 	result, err := audit.Audit(
 		&cfg,
-		append(strings.Split(rulesToExclude, ","), rules...),
+		rules,
 		strings.Split(severitiesToInclude, ","),
 	)
 	if err != nil {
