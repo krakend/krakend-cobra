@@ -72,4 +72,8 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 		os.Exit(1)
 		return
 	}
+
+	if len(result.Recommendations) > 0 {
+		os.Exit(1)
+	}
 }
