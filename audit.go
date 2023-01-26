@@ -25,10 +25,8 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 		return
 	}
 
-	rulesToExclude = strings.ReplaceAll(rulesToExclude, " ", "")
 	severitiesToInclude = strings.ReplaceAll(severitiesToInclude, " ", "")
-
-	rules := strings.Split(rulesToExclude, ",")
+	rules := strings.Split(strings.ReplaceAll(rulesToExclude, " ", ""), ",")
 
 	if rulesToExcludePath != "" {
 		b, err := os.ReadFile(rulesToExcludePath)
