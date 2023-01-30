@@ -4,9 +4,10 @@ go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.8.2
-	github.com/krakendio/krakend-audit v0.0.0-20230124174641-87c4bde9b793
+	github.com/krakendio/krakend-audit v0.0.0-20230130170128-e15928654a6b
 	github.com/krakendio/krakend-viper/v2 v2.0.1
 	github.com/luraproject/lura/v2 v2.2.3
+	github.com/mattn/go-isatty v0.0.17
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v0.0.5
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4
@@ -104,7 +105,6 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
-	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
