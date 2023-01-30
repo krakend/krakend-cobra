@@ -58,6 +58,20 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 			a, _ := json.Marshal(v)
 			return string(a)
 		},
+		"colored": func(s string) string {
+			switch s {
+			case audit.SeverityLow:
+				return fmt.Sprintf("\033[32;1m%s\033[0m", s)
+			case audit.SeverityMedium:
+				return fmt.Sprintf("\033[33;1m%s\033[0m", s)
+			case audit.SeverityHigh:
+				return fmt.Sprintf("\033[31;1m%s\033[0m", s)
+			case audit.SeverityCritical:
+				return fmt.Sprintf("\033[36;1m%s\033[0m", s)
+			default:
+				return s
+			}
+		},
 	}
 
 	tmpl, err := template.New("audit").Funcs(funcMap).Parse(formatTmpl)
