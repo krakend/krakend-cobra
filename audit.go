@@ -95,7 +95,7 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 		return
 	}
 
-	if err := tmpl.Execute(os.Stdout, result); err != nil {
+	if err := tmpl.Execute(os.Stderr, result); err != nil {
 		cmd.Println(errorMsg("ERROR rendering the results:") + fmt.Sprintf("\t%s\n", err.Error()))
 		os.Exit(1)
 		return

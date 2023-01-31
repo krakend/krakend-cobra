@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var IsTTY = isatty.IsTerminal(os.Stdout.Fd())
+var IsTTY = isatty.IsTerminal(os.Stderr.Fd())
 
 var (
 	cfgFile             string
