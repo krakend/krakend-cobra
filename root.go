@@ -11,6 +11,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var IsTTY = isatty.IsTerminal(os.Stdout.Fd())
+
 var (
 	cfgFile             string
 	debug               int
@@ -20,7 +22,7 @@ var (
 	rulesToExclude      string
 	rulesToExcludePath  string
 	severitiesToInclude = "CRITICAL,HIGH,MEDIUM,LOW"
-	formatTmpl          = defaultFormatTmpl
+	formatTmpl          string
 	parser              config.Parser
 	run                 func(config.ServiceConfig)
 
@@ -90,6 +92,7 @@ func init() {
 	if err != nil {
 		fmt.Println("decode error:", err)
 	}
+
 	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration file")
 	debugFlag := CountFlagBuilder(&debug, "debug", "d", "Enables the debug endpoint")
 	RootCommand = NewCommand(rootCmd)
@@ -109,10 +112,6 @@ func init() {
 	gogetFlag := BoolFlagBuilder(&gogetEnabled, "format", "f", false, "Shows fix commands to update your dependencies")
 	PluginCommand = NewCommand(pluginCmd, goSumFlag, goVersionFlag, libcVersionFlag, gogetFlag)
 
-	if isatty.IsTerminal(os.Stdout.Fd()) {
-		formatTmpl = terminalFormatTmpl
-	}
-
 	rulesToExcludeFlag := StringFlagBuilder(&rulesToExclude, "ignore", "i", rulesToExclude, "List of rules to ignore (comma-separated, no spaces)")
 	severitiesToIncludeFlag := StringFlagBuilder(&severitiesToInclude, "severity", "s", severitiesToInclude, "List of severities to include (comma-separated, no spaces)")
 	pathToRulesToExcludeFlag := StringFlagBuilder(&rulesToExcludePath, "ignore-file", "I", rulesToExcludePath, "Path to a text-plain file containing the list of rules to exclude")
@@ -124,9 +123,4 @@ func init() {
 	DefaultRoot = NewRoot(RootCommand, CheckCommand, RunCommand, PluginCommand, VersionCommand, AuditCommand)
 }
 
-const (
-	encodedLogo = "IOKVk+KWhOKWiCAgICAgICAgICAgICAgICAgICAgICAgICAg4paE4paE4paMICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKVk+KWiOKWiOKWiOKWiOKWiOKWiOKWhMK1ICAK4paQ4paI4paI4paIICDiloTilojilojilojilajilpDilojilojilojiloTilojilohI4pWX4paI4paI4paI4paI4paI4paI4paEICDilZHilojilojilowgLOKWhOKWiOKWiOKWiOKVqCDiloTilojilojilojilojilojilojiloQgIOKWk+KWiOKWiOKWjOKWiOKWiOKWiOKWiOKWiOKWhCAg4paI4paI4paI4paA4pWZ4pWZ4paA4paA4paI4paI4paI4pWVCuKWkOKWiOKWiOKWiOKWhOKWiOKWiOKWiOKWgCAg4paQ4paI4paI4paI4paI4paI4paAIuKVmeKWgOKWgCLilZniloDilojilojilogg4pWR4paI4paI4paI4paE4paI4paI4paI4pSYICDilojilojilojiloAiIuKWgOKWiOKWiOKWiCDilojilojilojilojiloDilZniloDilojilojilohIIOKWiOKWiOKWiCAgICAg4pWZ4paI4paI4paICuKWkOKWiOKWiOKWiOKWiOKWiOKWiOKWjCAgIOKWkOKWiOKWiOKWiOKMkCAgLOKWhOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiE3ilZHilojilojilojilojilojilojiloQgIOKVkeKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiE3ilojilojilojilowgICDilojilojilohIIOKWiOKWiOKWiCAgICAgLOKWiOKWiOKWiArilpDilojilojilojilajiloDilojilojilojCtSDilpDilojilojiloggICDilojilojilojilowgICzilojilojilohN4pWR4paI4paI4paI4pWZ4paA4paI4paI4paIICDilojilojilojiloRgYGDiloTiloRgIOKWiOKWiOKWiOKWjCAgIOKWiOKWiOKWiEgg4paI4paI4paILCws4pWT4paE4paI4paI4paI4paACuKWkOKWiOKWiOKWiCAg4pWZ4paI4paI4paI4paE4paQ4paI4paI4paIICAg4pWZ4paI4paI4paI4paI4paI4paI4paI4paI4paITeKVkeKWiOKWiOKWjCAg4pWZ4paI4paI4paI4paEYOKWgOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKVqCDilojilojilojilowgICDilojilojilohIIOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWgCAgCiAgICAgICAgICAgICAgICAgICAgIGBgICAgICAgICAgICAgICAgICAgICAgYCdgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo="
-
-	defaultFormatTmpl  = "{{ range .Recommendations }}{{.Rule}}\t[{{.Severity}}]   \t{{.Message}}\n{{ end }}"
-	terminalFormatTmpl = "{{ range .Recommendations }}{{.Rule}}\t[{{colored .Severity}}]   \t{{.Message}}\n{{ end }}"
-)
+const encodedLogo = "IOKVk+KWhOKWiCAgICAgICAgICAgICAgICAgICAgICAgICAg4paE4paE4paMICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKVk+KWiOKWiOKWiOKWiOKWiOKWiOKWhMK1ICAK4paQ4paI4paI4paIICDiloTilojilojilojilajilpDilojilojilojiloTilojilohI4pWX4paI4paI4paI4paI4paI4paI4paEICDilZHilojilojilowgLOKWhOKWiOKWiOKWiOKVqCDiloTilojilojilojilojilojilojiloQgIOKWk+KWiOKWiOKWjOKWiOKWiOKWiOKWiOKWiOKWhCAg4paI4paI4paI4paA4pWZ4pWZ4paA4paA4paI4paI4paI4pWVCuKWkOKWiOKWiOKWiOKWhOKWiOKWiOKWiOKWgCAg4paQ4paI4paI4paI4paI4paI4paAIuKVmeKWgOKWgCLilZniloDilojilojilogg4pWR4paI4paI4paI4paE4paI4paI4paI4pSYICDilojilojilojiloAiIuKWgOKWiOKWiOKWiCDilojilojilojilojiloDilZniloDilojilojilohIIOKWiOKWiOKWiCAgICAg4pWZ4paI4paI4paICuKWkOKWiOKWiOKWiOKWiOKWiOKWiOKWjCAgIOKWkOKWiOKWiOKWiOKMkCAgLOKWhOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiE3ilZHilojilojilojilojilojilojiloQgIOKVkeKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiE3ilojilojilojilowgICDilojilojilohIIOKWiOKWiOKWiCAgICAgLOKWiOKWiOKWiArilpDilojilojilojilajiloDilojilojilojCtSDilpDilojilojiloggICDilojilojilojilowgICzilojilojilohN4pWR4paI4paI4paI4pWZ4paA4paI4paI4paIICDilojilojilojiloRgYGDiloTiloRgIOKWiOKWiOKWiOKWjCAgIOKWiOKWiOKWiEgg4paI4paI4paILCws4pWT4paE4paI4paI4paI4paACuKWkOKWiOKWiOKWiCAg4pWZ4paI4paI4paI4paE4paQ4paI4paI4paIICAg4pWZ4paI4paI4paI4paI4paI4paI4paI4paI4paITeKVkeKWiOKWiOKWjCAg4pWZ4paI4paI4paI4paEYOKWgOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKVqCDilojilojilojilowgICDilojilojilohIIOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWgCAgCiAgICAgICAgICAgICAgICAgICAgIGBgICAgICAgICAgICAgICAgICAgICAgYCdgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo="

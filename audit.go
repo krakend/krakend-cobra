@@ -11,6 +11,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	defaultFormatTmpl  = "{{ range .Recommendations }}{{.Rule}}\t[{{.Severity}}]   \t{{.Message}}\n{{ end }}"
+	terminalFormatTmpl = "{{ range .Recommendations }}{{.Rule}}\t[{{colored .Severity}}]   \t{{.Message}}\n{{ end }}"
+)
+
 func auditFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
 		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
@@ -25,20 +30,29 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 		return
 	}
 
+	if formatTmpl == "" {
+		if IsTTY {
+			formatTmpl = terminalFormatTmpl
+		} else {
+			formatTmpl = defaultFormatTmpl
+		}
+	}
+
 	severitiesToInclude = strings.ReplaceAll(severitiesToInclude, " ", "")
 	rules := strings.Split(strings.ReplaceAll(rulesToExclude, " ", ""), ",")
 
 	if rulesToExcludePath != "" {
 		b, err := os.ReadFile(rulesToExcludePath)
 		if err != nil {
-			cmd.Println(errorMsg("ERROR parsing the ignore file:") + fmt.Sprintf("\t%s\n", err.Error()))
-		} else {
-			for _, line := range strings.Split(strings.ReplaceAll(string(b), " ", ""), "\n") {
-				if line == "" {
-					continue
-				}
-				rules = append(rules, line)
+			cmd.Println(errorMsg("ERROR accessing the ignore file:") + fmt.Sprintf("\t%s\n", err.Error()))
+			os.Exit(1)
+			return
+		}
+		for _, line := range strings.Split(strings.ReplaceAll(string(b), " ", ""), "\n") {
+			if line == "" {
+				continue
 			}
+			rules = append(rules, line)
 		}
 	}
 
