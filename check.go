@@ -29,7 +29,7 @@ func errorMsg(content string) string {
 
 func checkFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
-		cmd.Println(errorMsg("Please, provide the path to your config file"))
+		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
 		return
 	}
 

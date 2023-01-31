@@ -13,7 +13,7 @@ import (
 
 func auditFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
-		cmd.Println(errorMsg("Please, provide the path to your config file"))
+		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
 		os.Exit(1)
 		return
 	}
@@ -67,7 +67,7 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 			case audit.SeverityHigh:
 				return fmt.Sprintf("\033[31;1m%s\033[0m", s)
 			case audit.SeverityCritical:
-				return fmt.Sprintf("\033[36;1m%s\033[0m", s)
+				return fmt.Sprintf("\033[41;1m%s\033[0m", s)
 			default:
 				return s
 			}

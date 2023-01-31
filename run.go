@@ -8,7 +8,7 @@ import (
 
 func runFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
-		cmd.Println("Please, provide the path to your config file")
+		cmd.Println("Please, provide the path to the configuration file with --config or see all the options with --help")
 		return
 	}
 	serviceConfig, err := parser.Parse(cfgFile)

@@ -90,7 +90,7 @@ func init() {
 	if err != nil {
 		fmt.Println("decode error:", err)
 	}
-	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration filename")
+	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration file")
 	debugFlag := CountFlagBuilder(&debug, "debug", "d", "Enables the debug endpoint")
 	RootCommand = NewCommand(rootCmd)
 	RootCommand.Cmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
