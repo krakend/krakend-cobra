@@ -569,8 +569,8 @@ github.com/krakendio/bloomfilter/v2 v2.0.4 h1:+FCe52Izx4mZgFevvifOMF+3WbbhmZT0xZ
 github.com/krakendio/bloomfilter/v2 v2.0.4/go.mod h1:BH9pmOLLllSAvtjuwA2Ythd7RE3lQdNr1sHK3f2dJok=
 github.com/krakendio/flatmap v1.1.1 h1:rGBNVpBY0pMk6cLOwerVzoKY4HELnpu0xvqB231lOCQ=
 github.com/krakendio/flatmap v1.1.1/go.mod h1:KBuVkiH5BcBFRa5A1HdSHDn8a8LzsyRTKZArX0vqTbo=
-github.com/krakendio/krakend-audit v0.0.0-20230130170128-e15928654a6b h1:iHs7vOoWoO0LVWeHFKhIpnluNlNiipWc5hbyk5LI2jk=
-github.com/krakendio/krakend-audit v0.0.0-20230130170128-e15928654a6b/go.mod h1:ZmcT3eHnkJhusWwhle7hXqRRS+j02xJ/Fbq5zK/W8Qw=
+github.com/krakendio/krakend-audit v0.0.1 h1:8e6FlPKQY4t3r1ULV8AOr0k5+I8JNR+rV7buwsGRdGY=
+github.com/krakendio/krakend-audit v0.0.1/go.mod h1:ZmcT3eHnkJhusWwhle7hXqRRS+j02xJ/Fbq5zK/W8Qw=
 github.com/krakendio/krakend-botdetector/v2 v2.0.3 h1:Tn3nijjrahuw6K/rX8XE9jeL3GdXZ909iT5hBum2uB8=
 github.com/krakendio/krakend-botdetector/v2 v2.0.3/go.mod h1:5ss3VT0Tt61n362+vzPEggSWRJJ5FuOCzSJBFMbHTgI=
 github.com/krakendio/krakend-circuitbreaker/v2 v2.0.1 h1:rX5TAbdQa+mISIULDxYdviR7/7yOYCjSimuaXJHFrUA=

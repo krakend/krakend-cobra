@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.8.2
-	github.com/krakendio/krakend-audit v0.0.0-20230130170128-e15928654a6b
+	github.com/krakendio/krakend-audit v0.0.1
 	github.com/krakendio/krakend-viper/v2 v2.0.1
 	github.com/luraproject/lura/v2 v2.2.3
 	github.com/mattn/go-isatty v0.0.17
