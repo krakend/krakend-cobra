@@ -24,12 +24,15 @@ import (
 var SchemaURL = "https://www.krakend.io/schema/v3.json"
 
 func errorMsg(content string) string {
+	if !IsTTY {
+		return content
+	}
 	return dumper.ColorRed + content + dumper.ColorReset
 }
 
 func checkFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
-		cmd.Println(errorMsg("Please, provide the path to your config file"))
+		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
 		return
 	}
 
@@ -72,7 +75,7 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 	}
 
 	if debug > 0 {
-		cc := dumper.New(cmd, checkDumpPrefix, debug)
+		cc := dumper.NewWithColors(cmd, checkDumpPrefix, debug, IsTTY)
 		if err := cc.Dump(v); err != nil {
 			cmd.Println(errorMsg("ERROR checking the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
 			os.Exit(1)
@@ -88,7 +91,11 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 		}
 	}
 
-	cmd.Printf("%sSyntax OK!%s\n", dumper.ColorGreen, dumper.ColorReset)
+	if IsTTY {
+		cmd.Printf("%sSyntax OK!%s\n", dumper.ColorGreen, dumper.ColorReset)
+		return
+	}
+	cmd.Println("Syntax OK!")
 }
 
 func runRouter(cfg config.ServiceConfig) (err error) {

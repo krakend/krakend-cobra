@@ -3,20 +3,28 @@ package cmd
 import (
 	"encoding/base64"
 	"fmt"
+	"os"
 
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/core"
+	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 )
 
+var IsTTY = isatty.IsTerminal(os.Stderr.Fd())
+
 var (
-	cfgFile          string
-	debug            int
-	port             int
-	checkGinRoutes   bool
-	schemaValidation bool
-	parser           config.Parser
-	run              func(config.ServiceConfig)
+	cfgFile             string
+	debug               int
+	port                int
+	checkGinRoutes      bool
+	schemaValidation    bool
+	rulesToExclude      string
+	rulesToExcludePath  string
+	severitiesToInclude = "CRITICAL,HIGH,MEDIUM,LOW"
+	formatTmpl          string
+	parser              config.Parser
+	run                 func(config.ServiceConfig)
 
 	goSum           = "./go.sum"
 	goVersion       = core.GoVersion
@@ -30,6 +38,7 @@ var (
 	CheckCommand   Command
 	PluginCommand  Command
 	VersionCommand Command
+	AuditCommand   Command
 
 	rootCmd = &cobra.Command{
 		Use:   "krakend",
@@ -68,6 +77,14 @@ var (
 		Run:     versionFunc,
 		Example: "krakend version",
 	}
+
+	auditCmd = &cobra.Command{
+		Use:     "audit",
+		Short:   "Audits a KrakenD configuration.",
+		Long:    "Audits a KrakenD configuration.",
+		Run:     auditFunc,
+		Example: "krakend audit -i 1.1.1,1.1.2 -s CRITICAL -c krakend.json",
+	}
 )
 
 func init() {
@@ -75,7 +92,8 @@ func init() {
 	if err != nil {
 		fmt.Println("decode error:", err)
 	}
-	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration filename")
+
+	cfgFlag := StringFlagBuilder(&cfgFile, "config", "c", "", "Path to the configuration file")
 	debugFlag := CountFlagBuilder(&debug, "debug", "d", "Enables the debug endpoint")
 	RootCommand = NewCommand(rootCmd)
 	RootCommand.Cmd.SetHelpTemplate(string(logo) + "Version: " + core.KrakendVersion + "\n\n" + rootCmd.HelpTemplate())
@@ -94,9 +112,15 @@ func init() {
 	gogetFlag := BoolFlagBuilder(&gogetEnabled, "format", "f", false, "Shows fix commands to update your dependencies")
 	PluginCommand = NewCommand(pluginCmd, goSumFlag, goVersionFlag, libcVersionFlag, gogetFlag)
 
+	rulesToExcludeFlag := StringFlagBuilder(&rulesToExclude, "ignore", "i", rulesToExclude, "List of rules to ignore (comma-separated, no spaces)")
+	severitiesToIncludeFlag := StringFlagBuilder(&severitiesToInclude, "severity", "s", severitiesToInclude, "List of severities to include (comma-separated, no spaces)")
+	pathToRulesToExcludeFlag := StringFlagBuilder(&rulesToExcludePath, "ignore-file", "I", rulesToExcludePath, "Path to a text-plain file containing the list of rules to exclude")
+	formatFlag := StringFlagBuilder(&formatTmpl, "format", "f", formatTmpl, "Inline go template to render the results")
+	AuditCommand = NewCommand(auditCmd, cfgFlag, rulesToExcludeFlag, severitiesToIncludeFlag, pathToRulesToExcludeFlag, formatFlag)
+
 	VersionCommand = NewCommand(versionCmd)
 
-	DefaultRoot = NewRoot(RootCommand, CheckCommand, RunCommand, PluginCommand, VersionCommand)
+	DefaultRoot = NewRoot(RootCommand, CheckCommand, RunCommand, PluginCommand, VersionCommand, AuditCommand)
 }
 
 const encodedLogo = "IOKVk+KWhOKWiCAgICAgICAgICAgICAgICAgICAgICAgICAg4paE4paE4paMICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKVk+KWiOKWiOKWiOKWiOKWiOKWiOKWhMK1ICAK4paQ4paI4paI4paIICDiloTilojilojilojilajilpDilojilojilojiloTilojilohI4pWX4paI4paI4paI4paI4paI4paI4paEICDilZHilojilojilowgLOKWhOKWiOKWiOKWiOKVqCDiloTilojilojilojilojilojilojiloQgIOKWk+KWiOKWiOKWjOKWiOKWiOKWiOKWiOKWiOKWhCAg4paI4paI4paI4paA4pWZ4pWZ4paA4paA4paI4paI4paI4pWVCuKWkOKWiOKWiOKWiOKWhOKWiOKWiOKWiOKWgCAg4paQ4paI4paI4paI4paI4paI4paAIuKVmeKWgOKWgCLilZniloDilojilojilogg4pWR4paI4paI4paI4paE4paI4paI4paI4pSYICDilojilojilojiloAiIuKWgOKWiOKWiOKWiCDilojilojilojilojiloDilZniloDilojilojilohIIOKWiOKWiOKWiCAgICAg4pWZ4paI4paI4paICuKWkOKWiOKWiOKWiOKWiOKWiOKWiOKWjCAgIOKWkOKWiOKWiOKWiOKMkCAgLOKWhOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiE3ilZHilojilojilojilojilojilojiloQgIOKVkeKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiE3ilojilojilojilowgICDilojilojilohIIOKWiOKWiOKWiCAgICAgLOKWiOKWiOKWiArilpDilojilojilojilajiloDilojilojilojCtSDilpDilojilojiloggICDilojilojilojilowgICzilojilojilohN4pWR4paI4paI4paI4pWZ4paA4paI4paI4paIICDilojilojilojiloRgYGDiloTiloRgIOKWiOKWiOKWiOKWjCAgIOKWiOKWiOKWiEgg4paI4paI4paILCws4pWT4paE4paI4paI4paI4paACuKWkOKWiOKWiOKWiCAg4pWZ4paI4paI4paI4paE4paQ4paI4paI4paIICAg4pWZ4paI4paI4paI4paI4paI4paI4paI4paI4paITeKVkeKWiOKWiOKWjCAg4pWZ4paI4paI4paI4paEYOKWgOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKVqCDilojilojilojilowgICDilojilojilohIIOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWiOKWgCAgCiAgICAgICAgICAgICAgICAgICAgIGBgICAgICAgICAgICAgICAgICAgICAgYCdgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo="

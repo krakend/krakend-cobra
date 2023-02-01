@@ -9,21 +9,45 @@ import (
 )
 
 func New(cmd *cobra.Command, prefix string, verboseLevel int) Dumper {
-	return Dumper{
+	return NewWithColors(cmd, prefix, verboseLevel, true)
+}
+
+func NewWithColors(cmd *cobra.Command, prefix string, verboseLevel int, enableColors bool) Dumper {
+	d := Dumper{
 		cmd:             cmd,
 		checkDumpPrefix: prefix,
 		verboseLevel:    verboseLevel,
 	}
+	if !enableColors {
+		return d
+	}
+	d.colorRed = ColorRed
+	d.colorGreen = ColorGreen
+	d.colorReset = ColorReset
+	d.colorBlue = ColorBlue
+	d.colorCyan = ColorCyan
+	d.colorYellow = ColorYellow
+	d.colorMagenta = ColorMagenta
+	d.colorWhite = ColorWhite
+	return d
 }
 
 type Dumper struct {
 	cmd             *cobra.Command
 	checkDumpPrefix string
 	verboseLevel    int
+	colorRed        string
+	colorGreen      string
+	colorReset      string
+	colorBlue       string
+	colorCyan       string
+	colorYellow     string
+	colorMagenta    string
+	colorWhite      string
 }
 
 func (c Dumper) Dump(v config.ServiceConfig) error {
-	c.cmd.Printf("%sGlobal settings%s\n", ColorGreen, ColorReset)
+	c.cmd.Printf("%sGlobal settings%s\n", c.colorGreen, c.colorReset)
 	c.cmd.Printf("%sName: %s\n", c.checkDumpPrefix, v.Name)
 	c.cmd.Printf("%sPort: %d\n", c.checkDumpPrefix, v.Port)
 
@@ -70,27 +94,27 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 			c.cmd.Printf("%sCipher suites: %v\n", c.checkDumpPrefix, v.TLS.CipherSuites)
 		}
 	} else if c.verboseLevel > 1 {
-		c.cmd.Printf("%s%sNo TLS section defined%s\n", c.checkDumpPrefix, ColorRed, ColorReset)
+		c.cmd.Printf("%s%sNo TLS section defined%s\n", c.checkDumpPrefix, c.colorRed, c.colorReset)
 	}
 
 	if v.Plugin != nil {
 		c.cmd.Printf("%sFolder: %s\n", c.checkDumpPrefix, v.Plugin.Folder)
 		c.cmd.Printf("%sPattern: %s\n", c.checkDumpPrefix, v.Plugin.Pattern)
 	} else if c.verboseLevel > 1 {
-		c.cmd.Printf("%s%sNo Plugin section defined%s\n", c.checkDumpPrefix, ColorRed, ColorReset)
+		c.cmd.Printf("%s%sNo Plugin section defined%s\n", c.checkDumpPrefix, c.colorRed, c.colorReset)
 	}
 
 	if c.verboseLevel > 1 || len(v.ExtraConfig) > 0 {
-		c.cmd.Printf("%s%d global component configuration(s):%s\n", ColorGreen, len(v.ExtraConfig), ColorReset)
+		c.cmd.Printf("%s%d global component configuration(s):%s\n", c.colorGreen, len(v.ExtraConfig), c.colorReset)
 		c.dumpExtraConfig(v.ExtraConfig, "")
 	}
 
-	c.cmd.Printf("%s%d API endpoint(s):%s\n", ColorGreen, len(v.Endpoints), ColorReset)
+	c.cmd.Printf("%s%d API endpoint(s):%s\n", c.colorGreen, len(v.Endpoints), c.colorReset)
 	for _, endpoint := range v.Endpoints {
 		c.dumpEndpoint(endpoint)
 	}
 
-	c.cmd.Printf("%s%d async agent(s):%s\n", ColorGreen, len(v.AsyncAgents), ColorReset)
+	c.cmd.Printf("%s%d async agent(s):%s\n", c.colorGreen, len(v.AsyncAgents), c.colorReset)
 	for _, agent := range v.AsyncAgents {
 		c.dumpAgent(agent)
 	}
@@ -98,7 +122,7 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 }
 
 func (c Dumper) dumpAgent(agent *config.AsyncAgent) {
-	c.cmd.Printf("%s- %s%s%s\n", c.checkDumpPrefix, ColorCyan, agent.Name, ColorReset)
+	c.cmd.Printf("%s- %s%s%s\n", c.checkDumpPrefix, c.colorCyan, agent.Name, c.colorReset)
 
 	if c.verboseLevel > 1 {
 		c.cmd.Printf("%sEncoding: %s\n", c.checkDumpPrefix, agent.Encoding)
@@ -114,18 +138,18 @@ func (c Dumper) dumpAgent(agent *config.AsyncAgent) {
 	}
 
 	if c.verboseLevel > 1 || len(agent.ExtraConfig) > 0 {
-		c.cmd.Printf("%s%s%d agent component configuration(s):%s\n", c.checkDumpPrefix, ColorGreen, len(agent.ExtraConfig), ColorReset)
+		c.cmd.Printf("%s%s%d agent component configuration(s):%s\n", c.checkDumpPrefix, c.colorGreen, len(agent.ExtraConfig), c.colorReset)
 		c.dumpExtraConfig(agent.ExtraConfig, c.checkDumpPrefix)
 	}
 
-	c.cmd.Printf("%s%sConnecting to %d backend(s):%s\n", c.checkDumpPrefix, ColorGreen, len(agent.Backend), ColorReset)
+	c.cmd.Printf("%s%sConnecting to %d backend(s):%s\n", c.checkDumpPrefix, c.colorGreen, len(agent.Backend), c.colorReset)
 	for _, backend := range agent.Backend {
 		c.dumpBackend(backend)
 	}
 }
 
 func (c Dumper) dumpEndpoint(endpoint *config.EndpointConfig) {
-	c.cmd.Printf("%s- %s%s%s %s%s\n", c.checkDumpPrefix, methodColor(endpoint.Method), endpoint.Method, ColorCyan, endpoint.Endpoint, ColorReset)
+	c.cmd.Printf("%s- %s%s%s %s%s\n", c.checkDumpPrefix, c.methodColor(endpoint.Method), endpoint.Method, c.colorCyan, endpoint.Endpoint, c.colorReset)
 	c.cmd.Printf("%sTimeout: %s\n", c.checkDumpPrefix, endpoint.Timeout.String())
 
 	if c.verboseLevel > 1 || len(endpoint.QueryString) > 0 {
@@ -143,11 +167,11 @@ func (c Dumper) dumpEndpoint(endpoint *config.EndpointConfig) {
 	}
 
 	if c.verboseLevel > 1 || len(endpoint.ExtraConfig) > 0 {
-		c.cmd.Printf("%s%s%d endpoint component configuration(s):%s\n", c.checkDumpPrefix, ColorGreen, len(endpoint.ExtraConfig), ColorReset)
+		c.cmd.Printf("%s%s%d endpoint component configuration(s):%s\n", c.checkDumpPrefix, c.colorGreen, len(endpoint.ExtraConfig), c.colorReset)
 		c.dumpExtraConfig(endpoint.ExtraConfig, c.checkDumpPrefix)
 	}
 
-	c.cmd.Printf("%s%sConnecting to %d backend(s):%s\n", c.checkDumpPrefix, ColorGreen, len(endpoint.Backend), ColorReset)
+	c.cmd.Printf("%s%sConnecting to %d backend(s):%s\n", c.checkDumpPrefix, c.colorGreen, len(endpoint.Backend), c.colorReset)
 	for _, backend := range endpoint.Backend {
 		c.dumpBackend(backend)
 	}
@@ -155,7 +179,7 @@ func (c Dumper) dumpEndpoint(endpoint *config.EndpointConfig) {
 
 func (c Dumper) dumpBackend(backend *config.Backend) {
 	prefix := c.checkDumpPrefix + c.checkDumpPrefix
-	c.cmd.Printf("%s[+] %s%s%s %s%s\n", prefix, methodColor(backend.Method), backend.Method, ColorCyan, backend.URLPattern, ColorReset)
+	c.cmd.Printf("%s[+] %s%s%s %s%s\n", prefix, c.methodColor(backend.Method), backend.Method, c.colorCyan, backend.URLPattern, c.colorReset)
 	c.cmd.Printf("%sTimeout: %s\n", prefix, backend.Timeout.String())
 	c.cmd.Printf("%sHosts: %v\n", prefix, backend.Host)
 
@@ -172,20 +196,21 @@ func (c Dumper) dumpBackend(backend *config.Backend) {
 	}
 
 	if c.verboseLevel > 1 || len(backend.ExtraConfig) > 0 {
-		c.cmd.Printf("%s%s%d backend component configuration(s):%s\n", prefix, ColorGreen, len(backend.ExtraConfig), ColorReset)
+		c.cmd.Printf("%s%s%d backend component configuration(s):%s\n", prefix, c.colorGreen, len(backend.ExtraConfig), c.colorReset)
 		c.dumpExtraConfig(backend.ExtraConfig, prefix)
 	}
 	c.cmd.Println("")
 }
 
 func (c Dumper) dumpExtraConfig(cfg config.ExtraConfig, prefix string) {
-	keys := []string{}
+	var keys []string
+
 	for k := range cfg {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	for _, k := range keys {
-		c.cmd.Printf("%s%s- %s%s\n", prefix, ColorYellow, k, ColorReset)
+		c.cmd.Printf("%s%s- %s%s\n", prefix, c.colorYellow, k, c.colorReset)
 		if c.verboseLevel > 1 {
 			switch s := cfg[k].(type) {
 			case map[string]interface{}:
@@ -201,22 +226,24 @@ func (c Dumper) dumpExtraConfig(cfg config.ExtraConfig, prefix string) {
 	}
 }
 
-var methodColors = map[string]string{
-	http.MethodGet:     ColorBlue,
-	http.MethodPost:    ColorCyan,
-	http.MethodPut:     ColorYellow,
-	http.MethodDelete:  ColorRed,
-	http.MethodPatch:   ColorGreen,
-	http.MethodHead:    ColorMagenta,
-	http.MethodOptions: ColorWhite,
-}
-
-func methodColor(method string) string {
-	m, ok := methodColors[method]
-	if !ok {
-		return ColorGreen
+func (c Dumper) methodColor(s string) string {
+	switch s {
+	case http.MethodGet:
+		return c.colorBlue
+	case http.MethodPost:
+		return c.colorCyan
+	case http.MethodPut:
+		return c.colorYellow
+	case http.MethodDelete:
+		return c.colorRed
+	case http.MethodPatch:
+		return c.colorGreen
+	case http.MethodHead:
+		return c.colorMagenta
+	case http.MethodOptions:
+		return c.colorWhite
 	}
-	return m
+	return ""
 }
 
 const (
