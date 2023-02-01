@@ -203,7 +203,8 @@ func (c Dumper) dumpBackend(backend *config.Backend) {
 }
 
 func (c Dumper) dumpExtraConfig(cfg config.ExtraConfig, prefix string) {
-	keys := []string{}
+	var keys []string
+
 	for k := range cfg {
 		keys = append(keys, k)
 	}
