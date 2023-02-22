@@ -29,6 +29,7 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 		os.Exit(1)
 		return
 	}
+	cfg.Normalize()
 
 	if formatTmpl == "" {
 		if IsTTY {
