@@ -84,7 +84,7 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 	}
 
 	if checkGinRoutes {
-		if err := runRouter(v); err != nil {
+		if err := RunRouterFunc(v); err != nil {
 			cmd.Println(errorMsg("ERROR testing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
 			os.Exit(1)
 			return
@@ -98,7 +98,7 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 	cmd.Println("Syntax OK!")
 }
 
-func runRouter(cfg config.ServiceConfig) (err error) {
+var RunRouterFunc = func(cfg config.ServiceConfig) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = errors.New(r.(string))
