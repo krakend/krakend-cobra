@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var SchemaURL = "https://www.krakend.io/schema/%s/krakend.json"
+var SchemaURL = "https://www.krakend.io/schema/v%s/krakend.json"
 
 func errorMsg(content string) string {
 	if !IsTTY {
