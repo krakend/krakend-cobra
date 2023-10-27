@@ -6,11 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/krakendio/krakend-cobra/v2/dumper"
 
 	"github.com/luraproject/lura/v2/config"
+	"github.com/luraproject/lura/v2/core"
 	"github.com/luraproject/lura/v2/logging"
 	"github.com/luraproject/lura/v2/proxy"
 	krakendgin "github.com/luraproject/lura/v2/router/gin"
@@ -21,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var SchemaURL = "https://www.krakend.io/schema/v3.json"
+var SchemaURL = "https://www.krakend.io/schema/v%s/krakend.json"
 
 func errorMsg(content string) string {
 	if !IsTTY {
@@ -54,7 +56,8 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 			return
 		}
 
-		sch, err := jsonschema.Compile(SchemaURL)
+		url := fmt.Sprintf(SchemaURL, getVersionMinor(core.KrakendVersion))
+		sch, err := jsonschema.Compile(url)
 		if err != nil {
 			cmd.Println(errorMsg("ERROR compiling the schema:") + fmt.Sprintf("\t%s\n", err.Error()))
 			os.Exit(1)
@@ -116,4 +119,12 @@ var RunRouterFunc = func(cfg config.ServiceConfig) (err error) {
 	krakendgin.DefaultFactory(proxy.DefaultFactory(logging.NoOp), logging.NoOp).NewWithContext(ctx).Run(cfg)
 	cancel()
 	return nil
+}
+
+func getVersionMinor(ver string) string {
+	comps := strings.Split(ver, ".")
+	if len(comps) < 2 {
+		return ver
+	}
+	return fmt.Sprintf("%s.%s", comps[0], comps[1])
 }
