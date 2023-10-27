@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -40,16 +39,15 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 	cmd.Printf("Parsing configuration file: %s\n", cfgFile)
 
 	if schemaValidation {
-		data, err := os.ReadFile(cfgFile)
-		if err != nil {
-			cmd.Println(errorMsg("ERROR reading the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-			os.Exit(1)
-			return
-		}
-
 		var raw interface{}
-		if err := json.Unmarshal(data, &raw); err != nil {
-			cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+		var err error
+		if loader, ok := parser.(UnparsedConfigLoader); ok {
+			raw, err = loader.LoadUnparsed(cfgFile)
+		} else {
+			raw, err = DefaultUnparserConfigLoader(cfgFile)
+		}
+		if err != nil {
+			cmd.Println(errorMsg("ERROR checking the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
 			os.Exit(1)
 			return
 		}
