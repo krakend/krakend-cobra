@@ -32,6 +32,10 @@ func errorMsg(content string) string {
 	return dumper.ColorRed + content + dumper.ColorReset
 }
 
+type LastSourcer interface {
+	LastSource() ([]byte, error)
+}
+
 func checkFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
 		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
@@ -41,17 +45,31 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 
 	cmd.Printf("Parsing configuration file: %s\n", cfgFile)
 
+	v, err := parser.Parse(cfgFile)
+	if err != nil {
+		cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+		os.Exit(1)
+		return
+	}
+
 	if schemaValidation {
-		data, err := os.ReadFile(cfgFile)
+		var data []byte
+		var err error
+		if ls, ok := parser.(LastSourcer); ok {
+			data, err = ls.LastSource()
+		} else {
+			data, err = os.ReadFile(cfgFile)
+		}
+
 		if err != nil {
-			cmd.Println(errorMsg("ERROR reading the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+			cmd.Println(errorMsg("ERROR loading the configuration content:") + fmt.Sprintf("\t%s\n", err.Error()))
 			os.Exit(1)
 			return
 		}
 
 		var raw interface{}
 		if err := json.Unmarshal(data, &raw); err != nil {
-			cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+			cmd.Println(errorMsg("ERROR converting configuration content to JSON:") + fmt.Sprintf("\t%s\n", err.Error()))
 			os.Exit(1)
 			return
 		}
@@ -69,13 +87,6 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 			os.Exit(1)
 			return
 		}
-	}
-
-	v, err := parser.Parse(cfgFile)
-	if err != nil {
-		cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-		os.Exit(1)
-		return
 	}
 
 	if debug > 0 {
