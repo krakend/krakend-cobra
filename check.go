@@ -74,7 +74,14 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 			return
 		}
 
-		url := fmt.Sprintf(SchemaURL, getVersionMinor(core.KrakendVersion))
+		var url string
+		if strings.Contains(SchemaURL, "v%s") {
+			url = fmt.Sprintf(SchemaURL, getVersionMinor(core.KrakendVersion))
+		} else {
+			// the global schema url var might have been set at build time
+			// to something different
+			url = SchemaURL
+		}
 		sch, err := jsonschema.Compile(url)
 		if err != nil {
 			cmd.Println(errorMsg("ERROR compiling the schema:") + fmt.Sprintf("\t%s\n", err.Error()))
