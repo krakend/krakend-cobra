@@ -220,6 +220,9 @@ func (c Dumper) dumpBackend(backend *config.Backend) {
 		c.cmd.Printf("%sEncoding: %s\n", prefix, backend.Encoding)
 		c.cmd.Printf("%sIs collection: %+v\n", prefix, backend.IsCollection)
 		c.cmd.Printf("%sSD: %+v\n", prefix, backend.SD)
+		c.cmd.Printf("%sSD scheme: %s\n", prefix, backend.SDScheme)
+		c.cmd.Printf("%sHeaders to pass: %v\n", prefix, backend.HeadersToPass)
+		c.cmd.Printf("%sQuery strings to pass: %v\n", prefix, backend.QueryStringsToPass)
 	}
 
 	if c.verboseLevel > 1 || len(backend.ExtraConfig) > 0 {
