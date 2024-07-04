@@ -50,6 +50,7 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 	c.cmd.Printf("%sGlobal settings%s\n", c.colorGreen, c.colorReset)
 	c.cmd.Printf("%sName: %s\n", c.checkDumpPrefix, v.Name)
 	c.cmd.Printf("%sVersion: %d\n", c.checkDumpPrefix, v.Version)
+	c.cmd.Printf("%sAddress: %d\n", c.checkDumpPrefix, v.Address)
 	c.cmd.Printf("%sPort: %d\n", c.checkDumpPrefix, v.Port)
 
 	if c.verboseLevel > 1 {
@@ -78,10 +79,13 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 		c.cmd.Printf("%sMax idle connections per host: %d\n", c.checkDumpPrefix, v.MaxIdleConnsPerHost)
 		c.cmd.Printf("%sSequential start: %t\n", c.checkDumpPrefix, v.SequentialStart)
 
-		c.cmd.Printf("%sDefault enconding strategy: %s\n", c.checkDumpPrefix, v.OutputEncoding)
+		c.cmd.Printf("%sMax header bytes: %d\n", c.checkDumpPrefix, v.MaxHeaderBytes)
+		c.cmd.Printf("%sEcho endpoint enabled: %t\n", c.checkDumpPrefix, v.Echo)
+		c.cmd.Printf("%sDefault encoding strategy: %s\n", c.checkDumpPrefix, v.OutputEncoding)
 		c.cmd.Printf("%sDisable strict REST: %t\n", c.checkDumpPrefix, v.DisableStrictREST)
 		c.cmd.Printf("%sRun lura in debug mode: %t\n", c.checkDumpPrefix, v.Debug)
 		c.cmd.Printf("%sAllow insecure connections: %t\n", c.checkDumpPrefix, v.AllowInsecureConnections)
+		c.cmd.Printf("%sUseH2C: %t\n", c.checkDumpPrefix, v.UseH2C)
 	}
 
 	if v.TLS != nil {
