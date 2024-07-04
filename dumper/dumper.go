@@ -89,23 +89,40 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 	}
 
 	if v.TLS != nil {
-		c.cmd.Printf("%sDisabled: %v\n", c.checkDumpPrefix, v.TLS.IsDisabled)
-		c.cmd.Printf("%sPublic key: %s\n", c.checkDumpPrefix, v.TLS.PublicKey)
-		c.cmd.Printf("%sPrivate key: %s\n", c.checkDumpPrefix, v.TLS.PrivateKey)
-		c.cmd.Printf("%sEnable MTLS: %v\n", c.checkDumpPrefix, v.TLS.EnableMTLS)
+		c.cmd.Printf("%sTLS Disabled: %t\n", c.checkDumpPrefix, v.TLS.IsDisabled)
+        // TODO: update this with the new field `Keys`:
+		c.cmd.Printf("%sTLS Public key: %s\n", c.checkDumpPrefix, v.TLS.PublicKey)
+		c.cmd.Printf("%sTLS Private key: %s\n", c.checkDumpPrefix, v.TLS.PrivateKey)
+		c.cmd.Printf("%sTLS Enable MTLS: %t\n", c.checkDumpPrefix, v.TLS.EnableMTLS)
+		c.cmd.Printf("%sTLS Disable System CA Pool: %v\n", c.checkDumpPrefix, v.TLS.DisableSystemCaPool)
 
 		if c.verboseLevel > 1 {
-			c.cmd.Printf("%sMin version: %s\n", c.checkDumpPrefix, v.TLS.MinVersion)
-			c.cmd.Printf("%sMax version: %s\n", c.checkDumpPrefix, v.TLS.MaxVersion)
+			c.cmd.Printf("%sTLS Min version: %s\n", c.checkDumpPrefix, v.TLS.MinVersion)
+			c.cmd.Printf("%sTLS Max version: %s\n", c.checkDumpPrefix, v.TLS.MaxVersion)
 		}
 		if c.verboseLevel > 2 {
-			c.cmd.Printf("%sCurve preferences: %v\n", c.checkDumpPrefix, v.TLS.CurvePreferences)
-			c.cmd.Printf("%sPrefer server cipher suites: %v\n", c.checkDumpPrefix, v.TLS.PreferServerCipherSuites)
-			c.cmd.Printf("%sCipher suites: %v\n", c.checkDumpPrefix, v.TLS.CipherSuites)
+			c.cmd.Printf("%sTLS Curve preferences: %v\n", c.checkDumpPrefix, v.TLS.CurvePreferences)
+			c.cmd.Printf("%sTLS Prefer server cipher suites: %v\n", c.checkDumpPrefix, v.TLS.PreferServerCipherSuites)
+			c.cmd.Printf("%sTLS Cipher suites: %v\n", c.checkDumpPrefix, v.TLS.CipherSuites)
 		}
 	} else if c.verboseLevel > 1 {
 		c.cmd.Printf("%s%sNo TLS section defined%s\n", c.checkDumpPrefix, c.colorRed, c.colorReset)
 	}
+
+    if v.ClientTLS != nil {
+		c.cmd.Printf("%sClient TLS Allow Insecure Connections: %v\n", c.checkDumpPrefix, v.ClientTLS.AllowInsecureConnections)
+		c.cmd.Printf("%sClient TLS Disable System CA Pool: %v\n", c.checkDumpPrefix, v.ClientTLS.DisableSystemCaPool)
+
+		if c.verboseLevel > 1 {
+			c.cmd.Printf("%sClient TLS Min version: %s\n", c.checkDumpPrefix, v.ClientTLS.MinVersion)
+			c.cmd.Printf("%sClient TLS Max version: %s\n", c.checkDumpPrefix, v.ClientTLS.MaxVersion)
+		}
+		if c.verboseLevel > 2 {
+			c.cmd.Printf("%sClient TLS Curve preferences: %v\n", c.checkDumpPrefix, v.ClientTLS.CurvePreferences)
+			c.cmd.Printf("%sClient TLS Cipher suites: %v\n", c.checkDumpPrefix, v.ClientTLS.CipherSuites)
+			c.cmd.Printf("%sClient TLS Prefer server cipher suites: %v\n", c.checkDumpPrefix, v.Client TLS.PreferServerCipherSuites)
+		}
+    }
 
 	if v.Plugin != nil {
 		c.cmd.Printf("%sFolder: %s\n", c.checkDumpPrefix, v.Plugin.Folder)
