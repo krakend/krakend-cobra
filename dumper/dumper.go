@@ -90,7 +90,7 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 
 	if v.TLS != nil {
 		c.cmd.Printf("%sTLS Disabled: %t\n", c.checkDumpPrefix, v.TLS.IsDisabled)
-        // TODO: update this with the new field `Keys`:
+		// TODO: update this with the new field `Keys`:
 		c.cmd.Printf("%sTLS Public key: %s\n", c.checkDumpPrefix, v.TLS.PublicKey)
 		c.cmd.Printf("%sTLS Private key: %s\n", c.checkDumpPrefix, v.TLS.PrivateKey)
 		c.cmd.Printf("%sTLS Enable MTLS: %t\n", c.checkDumpPrefix, v.TLS.EnableMTLS)
@@ -109,7 +109,7 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 		c.cmd.Printf("%s%sNo TLS section defined%s\n", c.checkDumpPrefix, c.colorRed, c.colorReset)
 	}
 
-    if v.ClientTLS != nil {
+	if v.ClientTLS != nil {
 		c.cmd.Printf("%sClient TLS Allow Insecure Connections: %v\n", c.checkDumpPrefix, v.ClientTLS.AllowInsecureConnections)
 		c.cmd.Printf("%sClient TLS Disable System CA Pool: %v\n", c.checkDumpPrefix, v.ClientTLS.DisableSystemCaPool)
 
@@ -120,9 +120,8 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 		if c.verboseLevel > 2 {
 			c.cmd.Printf("%sClient TLS Curve preferences: %v\n", c.checkDumpPrefix, v.ClientTLS.CurvePreferences)
 			c.cmd.Printf("%sClient TLS Cipher suites: %v\n", c.checkDumpPrefix, v.ClientTLS.CipherSuites)
-			c.cmd.Printf("%sClient TLS Prefer server cipher suites: %v\n", c.checkDumpPrefix, v.Client TLS.PreferServerCipherSuites)
 		}
-    }
+	}
 
 	if v.Plugin != nil {
 		c.cmd.Printf("%sFolder: %s\n", c.checkDumpPrefix, v.Plugin.Folder)
