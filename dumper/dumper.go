@@ -50,7 +50,7 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 	c.cmd.Printf("%sGlobal settings%s\n", c.colorGreen, c.colorReset)
 	c.cmd.Printf("%sName: %s\n", c.checkDumpPrefix, v.Name)
 	c.cmd.Printf("%sVersion: %d\n", c.checkDumpPrefix, v.Version)
-	c.cmd.Printf("%sAddress: %d\n", c.checkDumpPrefix, v.Address)
+	c.cmd.Printf("%sAddress: %s\n", c.checkDumpPrefix, v.Address)
 	c.cmd.Printf("%sPort: %d\n", c.checkDumpPrefix, v.Port)
 
 	if c.verboseLevel > 1 {
