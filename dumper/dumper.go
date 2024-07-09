@@ -49,6 +49,8 @@ type Dumper struct {
 func (c Dumper) Dump(v config.ServiceConfig) error {
 	c.cmd.Printf("%sGlobal settings%s\n", c.colorGreen, c.colorReset)
 	c.cmd.Printf("%sName: %s\n", c.checkDumpPrefix, v.Name)
+	c.cmd.Printf("%sVersion: %d\n", c.checkDumpPrefix, v.Version)
+	c.cmd.Printf("%sAddress: %s\n", c.checkDumpPrefix, v.Address)
 	c.cmd.Printf("%sPort: %d\n", c.checkDumpPrefix, v.Port)
 
 	if c.verboseLevel > 1 {
@@ -76,25 +78,49 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 		c.cmd.Printf("%sMax idle connections: %d\n", c.checkDumpPrefix, v.MaxIdleConns)
 		c.cmd.Printf("%sMax idle connections per host: %d\n", c.checkDumpPrefix, v.MaxIdleConnsPerHost)
 		c.cmd.Printf("%sSequential start: %t\n", c.checkDumpPrefix, v.SequentialStart)
+
+		c.cmd.Printf("%sMax header bytes: %d\n", c.checkDumpPrefix, v.MaxHeaderBytes)
+		c.cmd.Printf("%sEcho endpoint enabled: %t\n", c.checkDumpPrefix, v.Echo)
+		c.cmd.Printf("%sDefault encoding strategy: %s\n", c.checkDumpPrefix, v.OutputEncoding)
+		c.cmd.Printf("%sDisable strict REST: %t\n", c.checkDumpPrefix, v.DisableStrictREST)
+		c.cmd.Printf("%sRun lura in debug mode: %t\n", c.checkDumpPrefix, v.Debug)
+		c.cmd.Printf("%sAllow insecure connections: %t\n", c.checkDumpPrefix, v.AllowInsecureConnections)
+		c.cmd.Printf("%sUseH2C: %t\n", c.checkDumpPrefix, v.UseH2C)
 	}
 
 	if v.TLS != nil {
-		c.cmd.Printf("%sDisabled: %v\n", c.checkDumpPrefix, v.TLS.IsDisabled)
-		c.cmd.Printf("%sPublic key: %s\n", c.checkDumpPrefix, v.TLS.PublicKey)
-		c.cmd.Printf("%sPrivate key: %s\n", c.checkDumpPrefix, v.TLS.PrivateKey)
-		c.cmd.Printf("%sEnable MTLS: %v\n", c.checkDumpPrefix, v.TLS.EnableMTLS)
+		c.cmd.Printf("%sTLS Disabled: %t\n", c.checkDumpPrefix, v.TLS.IsDisabled)
+		// TODO: update this with the new field `Keys`:
+		c.cmd.Printf("%sTLS Public key: %s\n", c.checkDumpPrefix, v.TLS.PublicKey)
+		c.cmd.Printf("%sTLS Private key: %s\n", c.checkDumpPrefix, v.TLS.PrivateKey)
+		c.cmd.Printf("%sTLS Enable MTLS: %t\n", c.checkDumpPrefix, v.TLS.EnableMTLS)
+		c.cmd.Printf("%sTLS Disable System CA Pool: %v\n", c.checkDumpPrefix, v.TLS.DisableSystemCaPool)
 
 		if c.verboseLevel > 1 {
-			c.cmd.Printf("%sMin version: %s\n", c.checkDumpPrefix, v.TLS.MinVersion)
-			c.cmd.Printf("%sMax version: %s\n", c.checkDumpPrefix, v.TLS.MaxVersion)
+			c.cmd.Printf("%sTLS Min version: %s\n", c.checkDumpPrefix, v.TLS.MinVersion)
+			c.cmd.Printf("%sTLS Max version: %s\n", c.checkDumpPrefix, v.TLS.MaxVersion)
 		}
 		if c.verboseLevel > 2 {
-			c.cmd.Printf("%sCurve preferences: %v\n", c.checkDumpPrefix, v.TLS.CurvePreferences)
-			c.cmd.Printf("%sPrefer server cipher suites: %v\n", c.checkDumpPrefix, v.TLS.PreferServerCipherSuites)
-			c.cmd.Printf("%sCipher suites: %v\n", c.checkDumpPrefix, v.TLS.CipherSuites)
+			c.cmd.Printf("%sTLS Curve preferences: %v\n", c.checkDumpPrefix, v.TLS.CurvePreferences)
+			c.cmd.Printf("%sTLS Prefer server cipher suites: %v\n", c.checkDumpPrefix, v.TLS.PreferServerCipherSuites)
+			c.cmd.Printf("%sTLS Cipher suites: %v\n", c.checkDumpPrefix, v.TLS.CipherSuites)
 		}
 	} else if c.verboseLevel > 1 {
 		c.cmd.Printf("%s%sNo TLS section defined%s\n", c.checkDumpPrefix, c.colorRed, c.colorReset)
+	}
+
+	if v.ClientTLS != nil {
+		c.cmd.Printf("%sClient TLS Allow Insecure Connections: %v\n", c.checkDumpPrefix, v.ClientTLS.AllowInsecureConnections)
+		c.cmd.Printf("%sClient TLS Disable System CA Pool: %v\n", c.checkDumpPrefix, v.ClientTLS.DisableSystemCaPool)
+
+		if c.verboseLevel > 1 {
+			c.cmd.Printf("%sClient TLS Min version: %s\n", c.checkDumpPrefix, v.ClientTLS.MinVersion)
+			c.cmd.Printf("%sClient TLS Max version: %s\n", c.checkDumpPrefix, v.ClientTLS.MaxVersion)
+		}
+		if c.verboseLevel > 2 {
+			c.cmd.Printf("%sClient TLS Curve preferences: %v\n", c.checkDumpPrefix, v.ClientTLS.CurvePreferences)
+			c.cmd.Printf("%sClient TLS Cipher suites: %v\n", c.checkDumpPrefix, v.ClientTLS.CipherSuites)
+		}
 	}
 
 	if v.Plugin != nil {
@@ -193,6 +219,9 @@ func (c Dumper) dumpBackend(backend *config.Backend) {
 		c.cmd.Printf("%sEncoding: %s\n", prefix, backend.Encoding)
 		c.cmd.Printf("%sIs collection: %+v\n", prefix, backend.IsCollection)
 		c.cmd.Printf("%sSD: %+v\n", prefix, backend.SD)
+		c.cmd.Printf("%sSD scheme: %s\n", prefix, backend.SDScheme)
+		c.cmd.Printf("%sHeaders to pass: %v\n", prefix, backend.HeadersToPass)
+		c.cmd.Printf("%sQuery strings to pass: %v\n", prefix, backend.QueryStringsToPass)
 	}
 
 	if c.verboseLevel > 1 || len(backend.ExtraConfig) > 0 {
