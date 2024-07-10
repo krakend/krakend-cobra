@@ -46,7 +46,7 @@ func pluginFunc(cmd *cobra.Command, _ []string) error {
 		return err
 	}
 
-	defer f.Close() //nolint:errcheck // Read only file so We would have returned an error before if this failed.
+	defer func() { _ = f.Close() }() // Workaround false positive for GO-S2307.
 
 	desc, err := plugin.Describe(f, goVersion, libcVersion)
 	if err != nil {
