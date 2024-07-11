@@ -1,0 +1,9 @@
+cloud.google.com/go
+	have: v0.100.3
+	want: v0.100.2
+github.com/Azure/azure-sdk-for-go
+	have: v59.3.1+incompatible
+	want: v59.3.0+incompatible
+golang.org/x/mod
+	have: v0.6.10-dev.0.20220419223038-86c51ed26bb4
+	want: v0.6.0-dev.0.20220419223038-86c51ed26bb4

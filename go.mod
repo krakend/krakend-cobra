@@ -11,7 +11,7 @@ require (
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.9.0
-	golang.org/x/mod v0.12.0
+	golang.org/x/mod v0.19.0
 )
 
 require (
