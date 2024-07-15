@@ -10,6 +10,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v0.0.5
+	github.com/stretchr/testify v1.9.0
 	golang.org/x/mod v0.8.0
 )
 
@@ -51,6 +52,7 @@ require (
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dimchansky/utfbom v1.1.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
@@ -123,6 +125,7 @@ require (
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20180406234716-d932a24a8ccb // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/sony/gobreaker v0.4.1 // indirect

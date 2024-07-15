@@ -66,7 +66,7 @@ var (
 		Use:     "check-plugin",
 		Short:   "Checks your plugin dependencies are compatible.",
 		Long:    "Checks your plugin dependencies are compatible and proposes commands to update your dependencies.",
-		Run:     pluginFunc,
+		RunE:    pluginFunc,
 		Example: "krakend check-plugin -g 1.19.0 -s ./go.sum -f",
 	}
 
@@ -106,7 +106,7 @@ func init() {
 	portFlag := IntFlagBuilder(&port, "port", "p", 0, "Listening port for the http service")
 	RunCommand = NewCommand(runCmd, cfgFlag, debugFlag, portFlag)
 
-	goSumFlag := StringFlagBuilder(&goSum, "sum", "s", goSum, "Path to the go.sum file to analize")
+	goSumFlag := StringFlagBuilder(&goSum, "sum", "s", goSum, "Path to the go.sum file to analyze")
 	goVersionFlag := StringFlagBuilder(&goVersion, "go", "g", goVersion, "The version of the go compiler used for your plugin")
 	libcVersionFlag := StringFlagBuilder(&libcVersion, "libc", "l", "", "Version of the libc library used")
 	gogetFlag := BoolFlagBuilder(&gogetEnabled, "format", "f", false, "Shows fix commands to update your dependencies")
