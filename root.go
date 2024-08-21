@@ -66,7 +66,7 @@ var (
 		Use:     "check-plugin",
 		Short:   "Checks your plugin dependencies are compatible.",
 		Long:    "Checks your plugin dependencies are compatible and proposes commands to update your dependencies.",
-		RunE:    pluginFunc,
+		Run:     pluginFunc,
 		Example: "krakend check-plugin -g 1.19.0 -s ./go.sum -f",
 	}
 

@@ -16,12 +16,12 @@ func indirectRequires(goSum string) (map[string]struct{}, error) {
 	filename := filepath.Join(dir, "go.mod")
 	data, err := os.ReadFile(filename)
 	if err != nil {
-		return nil, fmt.Errorf("read go.mod: %w", err)
+		return nil, fmt.Errorf("reading go.mod: %w", err)
 	}
 
 	f, err := modfile.Parse(filename, data, nil)
 	if err != nil {
-		return nil, fmt.Errorf("parse go.mod: %w", err)
+		return nil, fmt.Errorf("parsing go.mod: %w", err)
 	}
 
 	indirects := map[string]struct{}{}
@@ -40,7 +40,14 @@ func indirectRequires(goSum string) (map[string]struct{}, error) {
 // https://github.com/golang/go/issues/68045
 var localDescriber = plugin.Local
 
-func pluginFunc(cmd *cobra.Command, _ []string) error {
+func pluginFunc(cmd *cobra.Command, args []string) {
+	if err := pluginFuncErr(cmd, args); err != nil {
+		cmd.Println(err)
+		os.Exit(1)
+	}
+}
+
+func pluginFuncErr(cmd *cobra.Command, _ []string) error {
 	f, err := os.Open(goSum)
 	if err != nil {
 		return err

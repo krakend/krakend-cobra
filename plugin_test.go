@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_pluginFunc(t *testing.T) {
+func Test_pluginFuncErr(t *testing.T) {
 	var buf bytes.Buffer
 	cmd := &cobra.Command{}
 	cmd.SetOutput(&buf)
@@ -78,7 +78,7 @@ go get golang.org/x/mod@v0.6.0-dev.0.20220419223038-86c51ed26bb4
 			gogetEnabled = tc.fix
 			defer func() { gogetEnabled = fix }()
 
-			err := pluginFunc(cmd, nil)
+			err := pluginFuncErr(cmd, nil)
 			if tc.err != "" {
 				require.EqualError(t, err, tc.err)
 			} else {
