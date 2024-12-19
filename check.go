@@ -1,3 +1,4 @@
+// skipcq: RVV-A0003 Allow os.Exit outside main() or init()
 package cmd
 
 import (
@@ -41,7 +42,7 @@ func NewCheckCmd(rawSchema string) Command {
 	return CheckCommand
 }
 
-func checkFunc(cmd *cobra.Command, _ []string) {
+func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 	if cfgFile == "" {
 		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
 		os.Exit(1)
@@ -88,7 +89,7 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 		}
 
 		// Falling back to latest schema if the --online flag is defined or the embed schema was not set
-		if schemaFetchOnline || len(rawEmbedSchema) == 0 {
+		if schemaFetchOnline || rawEmbedSchema == "" {
 			schemaPath = fmt.Sprintf(onlineSchema, getVersionMinor(core.KrakendVersion))
 		}
 

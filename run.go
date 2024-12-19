@@ -1,3 +1,4 @@
+// skipcq: RVV-A0003 Allow os.Exit outside main() or init()
 package cmd
 
 import (
