@@ -19,6 +19,9 @@ var (
 	port                int
 	checkGinRoutes      bool
 	schemaValidation    bool
+	schemaPath          string
+	schemaFetchOnline   bool
+	rawEmbedSchema      string
 	rulesToExclude      string
 	rulesToExcludePath  string
 	severitiesToInclude = "CRITICAL,HIGH,MEDIUM,LOW"
@@ -100,8 +103,10 @@ func init() {
 
 	ginRoutesFlag := BoolFlagBuilder(&checkGinRoutes, "test-gin-routes", "t", false, "Tests the endpoint patterns against a real gin router on the selected port")
 	prefixFlag := StringFlagBuilder(&checkDumpPrefix, "indent", "i", checkDumpPrefix, "Indentation of the check dump")
-	schemaValidationFlag := BoolFlagBuilder(&schemaValidation, "lint", "l", schemaValidation, "Enables the linting against the official online KrakenD JSON schema")
-	CheckCommand = NewCommand(checkCmd, cfgFlag, debugFlag, ginRoutesFlag, prefixFlag, schemaValidationFlag)
+	schemaValidationFlag := BoolFlagBuilder(&schemaValidation, "lint", "l", schemaValidation, "Enables the linting against the official KrakenD JSON schema")
+	schemaPathFlag := StringFlagBuilder(&schemaPath, "schema", "s", schemaPath, "Lint against a custom schema path or URL")
+	schemaFetchOnline := BoolFlagBuilder(&schemaFetchOnline, "online", "o", schemaFetchOnline, "Lint against the latest online KrakenD JSON schema")
+	CheckCommand = NewCommand(checkCmd, cfgFlag, debugFlag, ginRoutesFlag, prefixFlag, schemaValidationFlag, schemaPathFlag, schemaFetchOnline)
 
 	portFlag := IntFlagBuilder(&port, "port", "p", 0, "Listening port for the http service")
 	RunCommand = NewCommand(runCmd, cfgFlag, debugFlag, portFlag)

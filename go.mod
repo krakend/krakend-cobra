@@ -1,6 +1,6 @@
 module github.com/krakendio/krakend-cobra/v2
 
-go 1.17
+go 1.22.0
 
 require (
 	github.com/gin-gonic/gin v1.9.1
@@ -8,7 +8,7 @@ require (
 	github.com/krakendio/krakend-viper/v2 v2.0.1
 	github.com/luraproject/lura/v2 v2.7.0
 	github.com/mattn/go-isatty v0.0.20
-	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
+	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/mod v0.12.0

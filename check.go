@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/krakendio/krakend-cobra/v2/dumper"
+	"github.com/santhosh-tekuri/jsonschema/v6"
 
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/core"
@@ -18,12 +20,10 @@ import (
 	krakendgin "github.com/luraproject/lura/v2/router/gin"
 
 	"github.com/gin-gonic/gin"
-	"github.com/santhosh-tekuri/jsonschema/v5"
-	_ "github.com/santhosh-tekuri/jsonschema/v5/httploader"
 	"github.com/spf13/cobra"
 )
 
-var SchemaURL = "https://www.krakend.io/schema/v%s/krakend.json"
+var onlineSchema = "https://www.krakend.io/schema/v%s/krakend.json"
 
 func errorMsg(content string) string {
 	if !IsTTY {
@@ -34,6 +34,11 @@ func errorMsg(content string) string {
 
 type LastSourcer interface {
 	LastSource() ([]byte, error)
+}
+
+func NewCheckCmd(rawSchema string) Command {
+	rawEmbedSchema = rawSchema
+	return CheckCommand
 }
 
 func checkFunc(cmd *cobra.Command, _ []string) {
@@ -53,6 +58,8 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 	}
 
 	if schemaValidation {
+		cmd.Print("Linting configuration file...\n")
+
 		var data []byte
 		var err error
 		if ls, ok := parser.(LastSourcer); ok {
@@ -74,19 +81,57 @@ func checkFunc(cmd *cobra.Command, _ []string) {
 			return
 		}
 
-		var url string
-		if strings.Contains(SchemaURL, "v%s") {
-			url = fmt.Sprintf(SchemaURL, getVersionMinor(core.KrakendVersion))
-		} else {
-			// the global schema url var might have been set at build time
-			// to something different
-			url = SchemaURL
-		}
-		sch, err := jsonschema.Compile(url)
-		if err != nil {
-			cmd.Println(errorMsg("ERROR compiling the schema:") + fmt.Sprintf("\t%s\n", err.Error()))
+		if len(schemaPath) > 0 && schemaFetchOnline {
+			cmd.Println(errorMsg("You cannot use both the --schema and --online options simultaneously. These arguments are mutually exclusive."))
 			os.Exit(1)
 			return
+		}
+
+		// Falling back to latest schema if the --online flag is defined or the embed schema was not set
+		if schemaFetchOnline || len(rawEmbedSchema) == 0 {
+			schemaPath = fmt.Sprintf(onlineSchema, getVersionMinor(core.KrakendVersion))
+		}
+
+		var sch *jsonschema.Schema
+		var compilationErr error
+		if len(schemaPath) > 0 {
+			cmd.Printf("Using schema %s\n", schemaPath)
+
+			httpLoader := HTTPURLLoader(http.Client{
+				Timeout: 10 * time.Second,
+			})
+
+			loader := jsonschema.SchemeURLLoader{
+				"file":  jsonschema.FileLoader{},
+				"http":  &httpLoader,
+				"https": &httpLoader,
+			}
+			compiler := jsonschema.NewCompiler()
+			compiler.UseLoader(loader)
+
+			sch, compilationErr = compiler.Compile(schemaPath)
+			if compilationErr != nil {
+				cmd.Println(errorMsg("ERROR compiling the custom schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
+				os.Exit(1)
+				return
+			}
+		} else {
+			rawSchema, parseError := jsonschema.UnmarshalJSON(strings.NewReader(rawEmbedSchema))
+			if parseError != nil {
+				cmd.Println(errorMsg("ERROR parsing the embed schema:") + fmt.Sprintf("\t%s\n", parseError.Error()))
+				os.Exit(1)
+				return
+			}
+
+			compiler := jsonschema.NewCompiler()
+			compiler.AddResource("schema.json", rawSchema)
+
+			sch, compilationErr = compiler.Compile("schema.json")
+			if compilationErr != nil {
+				cmd.Println(errorMsg("ERROR compiling the embed schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
+				os.Exit(1)
+				return
+			}
 		}
 
 		if err = sch.Validate(raw); err != nil {
@@ -145,4 +190,21 @@ func getVersionMinor(ver string) string {
 		return ver
 	}
 	return fmt.Sprintf("%s.%s", comps[0], comps[1])
+}
+
+type HTTPURLLoader http.Client
+
+func (l *HTTPURLLoader) Load(url string) (interface{}, error) {
+	client := (*http.Client)(l)
+	resp, err := client.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		_ = resp.Body.Close()
+		return nil, fmt.Errorf("%s returned status code %d", url, resp.StatusCode)
+	}
+	defer resp.Body.Close()
+
+	return jsonschema.UnmarshalJSON(resp.Body)
 }
