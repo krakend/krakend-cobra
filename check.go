@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var onlineSchema = "https://www.krakend.io/schema/v%s/krakend.json"
+var SchemaUrl = "https://www.krakend.io/schema/v%s/krakend.json"
 
 func errorMsg(content string) string {
 	if !IsTTY {
@@ -57,9 +57,9 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 		return
 	}
 
-	if schemaValidation {
-		cmd.Print("Linting configuration file...\n")
+	shouldLint := lintCurrentSchema || lintNoNetwork || (lintCustomSchemaPath != "")
 
+	if shouldLint {
 		var data []byte
 		var err error
 		if ls, ok := parser.(LastSourcer); ok {
@@ -81,41 +81,9 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 			return
 		}
 
-		if len(schemaPath) > 0 && schemaFetchOnline {
-			cmd.Println(errorMsg("You cannot use both the --schema and --online options simultaneously. These arguments are mutually exclusive."))
-			os.Exit(1) // skipcq: RVV-A0003
-			return
-		}
-
-		// Falling back to latest schema if the --online flag is defined or the embed schema was not set
-		if schemaFetchOnline || rawEmbedSchema == "" {
-			schemaPath = fmt.Sprintf(onlineSchema, getVersionMinor(core.KrakendVersion))
-		}
-
 		var sch *jsonschema.Schema
 		var compilationErr error
-		if len(schemaPath) > 0 {
-			cmd.Printf("Using schema %s\n", schemaPath)
-
-			httpLoader := HTTPURLLoader(http.Client{
-				Timeout: 10 * time.Second,
-			})
-
-			loader := jsonschema.SchemeURLLoader{
-				"file":  jsonschema.FileLoader{},
-				"http":  &httpLoader,
-				"https": &httpLoader,
-			}
-			compiler := jsonschema.NewCompiler()
-			compiler.UseLoader(loader)
-
-			sch, compilationErr = compiler.Compile(schemaPath)
-			if compilationErr != nil {
-				cmd.Println(errorMsg("ERROR compiling the custom schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
-				os.Exit(1) // skipcq: RVV-A0003
-				return
-			}
-		} else {
+		if lintNoNetwork {
 			rawSchema, parseError := jsonschema.UnmarshalJSON(strings.NewReader(rawEmbedSchema))
 			if parseError != nil {
 				cmd.Println(errorMsg("ERROR parsing the embed schema:") + fmt.Sprintf("\t%s\n", parseError.Error()))
@@ -129,6 +97,29 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 			sch, compilationErr = compiler.Compile("schema.json")
 			if compilationErr != nil {
 				cmd.Println(errorMsg("ERROR compiling the embed schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
+				os.Exit(1) // skipcq: RVV-A0003
+				return
+			}
+		} else {
+			if lintCustomSchemaPath == "" {
+				lintCustomSchemaPath = fmt.Sprintf(SchemaUrl, getVersionMinor(core.KrakendVersion))
+			}
+
+			httpLoader := HTTPURLLoader(http.Client{
+				Timeout: 10 * time.Second,
+			})
+
+			loader := jsonschema.SchemeURLLoader{
+				"file":  jsonschema.FileLoader{},
+				"http":  &httpLoader,
+				"https": &httpLoader,
+			}
+			compiler := jsonschema.NewCompiler()
+			compiler.UseLoader(loader)
+
+			sch, compilationErr = compiler.Compile(lintCustomSchemaPath)
+			if compilationErr != nil {
+				cmd.Println(errorMsg("ERROR compiling the custom schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
 				os.Exit(1) // skipcq: RVV-A0003
 				return
 			}
@@ -195,6 +186,11 @@ func getVersionMinor(ver string) string {
 type HTTPURLLoader http.Client
 
 func (l *HTTPURLLoader) Load(url string) (interface{}, error) {
+	// We should not be able to get to this scenario but... just in case
+	if lintNoNetwork {
+		return nil, errors.New("can't make external requests with the --lint-no-network flag")
+	}
+
 	client := (*http.Client)(l)
 	resp, err := client.Get(url)
 	if err != nil {
