@@ -1,4 +1,3 @@
-// skipcq: RVV-A0003 Allow os.Exit outside main() or init()
 package cmd
 
 import (
@@ -44,7 +43,7 @@ var localDescriber = plugin.Local
 func pluginFunc(cmd *cobra.Command, args []string) {
 	if err := pluginFuncErr(cmd, args); err != nil {
 		cmd.Println(err)
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003
 	}
 }
 

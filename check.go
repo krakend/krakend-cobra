@@ -1,4 +1,3 @@
-// skipcq: RVV-A0003 Allow os.Exit outside main() or init()
 package cmd
 
 import (
@@ -45,7 +44,7 @@ func NewCheckCmd(rawSchema string) Command {
 func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 	if cfgFile == "" {
 		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003 // skipcq: RVV-A0003
 		return
 	}
 
@@ -54,7 +53,7 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 	v, err := parser.Parse(cfgFile)
 	if err != nil {
 		cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003 // skipcq: RVV-A0003
 		return
 	}
 
@@ -71,20 +70,20 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 
 		if err != nil {
 			cmd.Println(errorMsg("ERROR loading the configuration content:") + fmt.Sprintf("\t%s\n", err.Error()))
-			os.Exit(1)
+			os.Exit(1) // skipcq: RVV-A0003
 			return
 		}
 
 		var raw interface{}
 		if err := json.Unmarshal(data, &raw); err != nil {
 			cmd.Println(errorMsg("ERROR converting configuration content to JSON:") + fmt.Sprintf("\t%s\n", err.Error()))
-			os.Exit(1)
+			os.Exit(1) // skipcq: RVV-A0003
 			return
 		}
 
 		if len(schemaPath) > 0 && schemaFetchOnline {
 			cmd.Println(errorMsg("You cannot use both the --schema and --online options simultaneously. These arguments are mutually exclusive."))
-			os.Exit(1)
+			os.Exit(1) // skipcq: RVV-A0003
 			return
 		}
 
@@ -113,14 +112,14 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 			sch, compilationErr = compiler.Compile(schemaPath)
 			if compilationErr != nil {
 				cmd.Println(errorMsg("ERROR compiling the custom schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
-				os.Exit(1)
+				os.Exit(1) // skipcq: RVV-A0003
 				return
 			}
 		} else {
 			rawSchema, parseError := jsonschema.UnmarshalJSON(strings.NewReader(rawEmbedSchema))
 			if parseError != nil {
 				cmd.Println(errorMsg("ERROR parsing the embed schema:") + fmt.Sprintf("\t%s\n", parseError.Error()))
-				os.Exit(1)
+				os.Exit(1) // skipcq: RVV-A0003
 				return
 			}
 
@@ -130,14 +129,14 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 			sch, compilationErr = compiler.Compile("schema.json")
 			if compilationErr != nil {
 				cmd.Println(errorMsg("ERROR compiling the embed schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
-				os.Exit(1)
+				os.Exit(1) // skipcq: RVV-A0003
 				return
 			}
 		}
 
 		if err = sch.Validate(raw); err != nil {
 			cmd.Println(errorMsg("ERROR linting the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-			os.Exit(1)
+			os.Exit(1) // skipcq: RVV-A0003
 			return
 		}
 	}
@@ -146,7 +145,7 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 		cc := dumper.NewWithColors(cmd, checkDumpPrefix, debug, IsTTY)
 		if err := cc.Dump(v); err != nil {
 			cmd.Println(errorMsg("ERROR checking the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-			os.Exit(1)
+			os.Exit(1) // skipcq: RVV-A0003
 			return
 		}
 	}
@@ -154,7 +153,7 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 	if checkGinRoutes {
 		if err := RunRouterFunc(v); err != nil {
 			cmd.Println(errorMsg("ERROR testing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-			os.Exit(1)
+			os.Exit(1) // skipcq: RVV-A0003
 			return
 		}
 	}
@@ -205,7 +204,11 @@ func (l *HTTPURLLoader) Load(url string) (interface{}, error) {
 		_ = resp.Body.Close()
 		return nil, fmt.Errorf("%s returned status code %d", url, resp.StatusCode)
 	}
-	defer resp.Body.Close()
 
-	return jsonschema.UnmarshalJSON(resp.Body)
+	body, err := jsonschema.UnmarshalJSON(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, resp.Body.Close()
 }
