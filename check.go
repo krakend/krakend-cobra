@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var SchemaUrl = "https://www.krakend.io/schema/v%s/krakend.json"
+var SchemaURL = "https://www.krakend.io/schema/v%s/krakend.json"
 
 func errorMsg(content string) string {
 	if !IsTTY {
@@ -102,7 +102,7 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 			}
 		} else {
 			if lintCustomSchemaPath == "" {
-				lintCustomSchemaPath = fmt.Sprintf(SchemaUrl, getVersionMinor(core.KrakendVersion))
+				lintCustomSchemaPath = fmt.Sprintf(SchemaURL, getVersionMinor(core.KrakendVersion))
 			}
 
 			httpLoader := HTTPURLLoader(http.Client{
