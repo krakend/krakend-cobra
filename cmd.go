@@ -76,21 +76,21 @@ func CountFlagBuilder(dst *int, long, short, help string) FlagBuilder {
 	}
 }
 
-type ContraintBuilder func(*cobra.Command)
+type ConstraintBuilder func(*cobra.Command)
 
-func OneRequired(flags ...string) ContraintBuilder {
+func OneRequired(flags ...string) ConstraintBuilder {
 	return func(cmd *cobra.Command) {
 		cmd.MarkFlagsOneRequired(flags...)
 	}
 }
 
-func RequiredTogether(flags ...string) ContraintBuilder {
+func RequiredTogether(flags ...string) ConstraintBuilder {
 	return func(cmd *cobra.Command) {
 		cmd.MarkFlagsRequiredTogether(flags...)
 	}
 }
 
-func MutuallyExclusive(flags ...string) ContraintBuilder {
+func MutuallyExclusive(flags ...string) ConstraintBuilder {
 	return func(cmd *cobra.Command) {
 		cmd.MarkFlagsMutuallyExclusive(flags...)
 	}
@@ -100,14 +100,14 @@ type Command struct {
 	Cmd         *cobra.Command
 	Flags       []FlagBuilder
 	once        *sync.Once
-	Constraints []ContraintBuilder
+	Constraints []ConstraintBuilder
 }
 
 func NewCommand(command *cobra.Command, flags ...FlagBuilder) Command {
 	return Command{Cmd: command, Flags: flags, once: new(sync.Once)}
 }
 
-func (c *Command) AddConstraint(r ContraintBuilder) {
+func (c *Command) AddConstraint(r ConstraintBuilder) {
 	c.Constraints = append(c.Constraints, r)
 }
 

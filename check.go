@@ -194,6 +194,7 @@ func (l *SchemaHttpLoader) Load(url string) (interface{}, error) {
 
 	body, err := jsonschema.UnmarshalJSON(resp.Body)
 	if err != nil {
+		resp.Body.Close()
 		return nil, err
 	}
 
