@@ -95,11 +95,6 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 			compiler.AddResource("schema.json", rawSchema)
 
 			sch, compilationErr = compiler.Compile("schema.json")
-			if compilationErr != nil {
-				cmd.Println(errorMsg("ERROR compiling the embed schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
-				os.Exit(1) // skipcq: RVV-A0003
-				return
-			}
 		} else {
 			if lintCustomSchemaPath == "" {
 				lintCustomSchemaPath = fmt.Sprintf(SchemaURL, getVersionMinor(core.KrakendVersion))
@@ -118,11 +113,12 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 			compiler.UseLoader(loader)
 
 			sch, compilationErr = compiler.Compile(lintCustomSchemaPath)
-			if compilationErr != nil {
-				cmd.Println(errorMsg("ERROR compiling the custom schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
-				os.Exit(1) // skipcq: RVV-A0003
-				return
-			}
+		}
+
+		if compilationErr != nil {
+			cmd.Println(errorMsg("ERROR compiling the schema:") + fmt.Sprintf("\t%s\n", compilationErr.Error()))
+			os.Exit(1) // skipcq: RVV-A0003
+			return
 		}
 
 		if err = sch.Validate(raw); err != nil {
