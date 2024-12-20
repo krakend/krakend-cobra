@@ -100,7 +100,7 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 				lintCustomSchemaPath = fmt.Sprintf(SchemaURL, getVersionMinor(core.KrakendVersion))
 			}
 
-			httpLoader := HTTPURLLoader(http.Client{
+			httpLoader := SchemaHttpLoader(http.Client{
 				Timeout: 10 * time.Second,
 			})
 
@@ -179,14 +179,9 @@ func getVersionMinor(ver string) string {
 	return fmt.Sprintf("%s.%s", comps[0], comps[1])
 }
 
-type HTTPURLLoader http.Client
+type SchemaHttpLoader http.Client
 
-func (l *HTTPURLLoader) Load(url string) (interface{}, error) {
-	// We should not be able to get to this scenario but... just in case
-	if lintNoNetwork {
-		return nil, errors.New("can't make external requests with the --lint-no-network flag")
-	}
-
+func (l *SchemaHttpLoader) Load(url string) (interface{}, error) {
 	client := (*http.Client)(l)
 	resp, err := client.Get(url)
 	if err != nil {
