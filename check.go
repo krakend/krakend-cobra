@@ -128,8 +128,8 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 		}
 	}
 
-	if debug > 0 {
-		cc := dumper.NewWithColors(cmd, checkDumpPrefix, debug, IsTTY)
+	if checkDebug > 0 {
+		cc := dumper.NewWithColors(cmd, checkDumpPrefix, checkDebug, IsTTY)
 		if err := cc.Dump(v); err != nil {
 			cmd.Println(errorMsg("ERROR checking the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
 			os.Exit(1) // skipcq: RVV-A0003

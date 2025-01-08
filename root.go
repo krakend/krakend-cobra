@@ -18,6 +18,7 @@ var (
 	debug                int
 	port                 int
 	checkGinRoutes       bool
+	checkDebug           int
 	lintCurrentSchema    bool
 	lintCustomSchemaPath string
 	lintNoNetwork        bool
@@ -106,7 +107,8 @@ func init() {
 	lintCurrentSchemaFlag := BoolFlagBuilder(&lintCurrentSchema, "lint", "l", lintCurrentSchema, "Enables the linting against the official KrakenD online JSON schema")
 	lintCustomSchemaFlag := StringFlagBuilder(&lintCustomSchemaPath, "lint-schema", "s", lintCustomSchemaPath, "Lint against a custom schema path or URL")
 	lintNoNetworkFlag := BoolFlagBuilder(&lintNoNetwork, "lint-no-network", "n", lintNoNetwork, "Lint against the builtin Krakend JSON schema, no network is required")
-	CheckCommand = NewCommand(checkCmd, cfgFlag, debugFlag, ginRoutesFlag, prefixFlag, lintCurrentSchemaFlag, lintCustomSchemaFlag, lintNoNetworkFlag)
+	checkDebugFlag := CountFlagBuilder(&checkDebug, "debug", "d", "Information about how KrakenD is interpreting your configuration file")
+	CheckCommand = NewCommand(checkCmd, cfgFlag, checkDebugFlag, ginRoutesFlag, prefixFlag, lintCurrentSchemaFlag, lintCustomSchemaFlag, lintNoNetworkFlag)
 	CheckCommand.AddConstraint(MutuallyExclusive("lint", "lint-no-network", "lint-schema"))
 
 	portFlag := IntFlagBuilder(&port, "port", "p", 0, "Listening port for the http service")
