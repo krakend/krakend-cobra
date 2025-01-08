@@ -76,14 +76,39 @@ func CountFlagBuilder(dst *int, long, short, help string) FlagBuilder {
 	}
 }
 
+type ConstraintBuilder func(*cobra.Command)
+
+func OneRequired(flags ...string) ConstraintBuilder {
+	return func(cmd *cobra.Command) {
+		cmd.MarkFlagsOneRequired(flags...)
+	}
+}
+
+func RequiredTogether(flags ...string) ConstraintBuilder {
+	return func(cmd *cobra.Command) {
+		cmd.MarkFlagsRequiredTogether(flags...)
+	}
+}
+
+func MutuallyExclusive(flags ...string) ConstraintBuilder {
+	return func(cmd *cobra.Command) {
+		cmd.MarkFlagsMutuallyExclusive(flags...)
+	}
+}
+
 type Command struct {
-	Cmd   *cobra.Command
-	Flags []FlagBuilder
-	once  *sync.Once
+	Cmd         *cobra.Command
+	Flags       []FlagBuilder
+	once        *sync.Once
+	Constraints []ConstraintBuilder
 }
 
 func NewCommand(command *cobra.Command, flags ...FlagBuilder) Command {
 	return Command{Cmd: command, Flags: flags, once: new(sync.Once)}
+}
+
+func (c *Command) AddConstraint(r ConstraintBuilder) {
+	c.Constraints = append(c.Constraints, r)
 }
 
 func (c *Command) AddFlag(f FlagBuilder) {
@@ -116,9 +141,16 @@ type Root struct {
 func (r *Root) Build() {
 	r.once.Do(func() {
 		r.BuildFlags()
+		for i := range r.Constraints {
+			r.Constraints[i](r.Cmd)
+		}
 		for i := range r.SubCommands {
-			r.SubCommands[i].BuildFlags()
-			r.Cmd.AddCommand(r.SubCommands[i].Cmd)
+			s := r.SubCommands[i]
+			s.BuildFlags()
+			for j := range s.Constraints {
+				s.Constraints[j](s.Cmd)
+			}
+			r.Cmd.AddCommand(s.Cmd)
 		}
 	})
 }

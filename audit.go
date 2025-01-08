@@ -19,14 +19,14 @@ const (
 func auditFunc(cmd *cobra.Command, _ []string) {
 	if cfgFile == "" {
 		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003
 		return
 	}
 
 	cfg, err := parser.Parse(cfgFile)
 	if err != nil {
 		cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003
 		return
 	}
 	cfg.Normalize()
@@ -46,7 +46,7 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 		b, err := os.ReadFile(rulesToExcludePath)
 		if err != nil {
 			cmd.Println(errorMsg("ERROR accessing the ignore file:") + fmt.Sprintf("\t%s\n", err.Error()))
-			os.Exit(1)
+			os.Exit(1) // skipcq: RVV-A0003
 			return
 		}
 		for _, line := range strings.Split(strings.ReplaceAll(string(b), " ", ""), "\n") {
@@ -64,7 +64,7 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 	)
 	if err != nil {
 		cmd.Println(errorMsg("ERROR auditing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003
 		return
 	}
 
@@ -92,17 +92,17 @@ func auditFunc(cmd *cobra.Command, _ []string) {
 	tmpl, err := template.New("audit").Funcs(funcMap).Parse(formatTmpl)
 	if err != nil {
 		cmd.Println(errorMsg("ERROR parsing the template:") + fmt.Sprintf("\t%s\n", err.Error()))
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003
 		return
 	}
 
 	if err := tmpl.Execute(os.Stderr, result); err != nil {
 		cmd.Println(errorMsg("ERROR rendering the results:") + fmt.Sprintf("\t%s\n", err.Error()))
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003
 		return
 	}
 
 	if len(result.Recommendations) > 0 {
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003
 	}
 }

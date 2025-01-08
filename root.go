@@ -14,17 +14,21 @@ import (
 var IsTTY = isatty.IsTerminal(os.Stderr.Fd())
 
 var (
-	cfgFile             string
-	debug               int
-	port                int
-	checkGinRoutes      bool
-	schemaValidation    bool
-	rulesToExclude      string
-	rulesToExcludePath  string
-	severitiesToInclude = "CRITICAL,HIGH,MEDIUM,LOW"
-	formatTmpl          string
-	parser              config.Parser
-	run                 func(config.ServiceConfig)
+	cfgFile              string
+	debug                int
+	port                 int
+	checkGinRoutes       bool
+	checkDebug           int
+	lintCurrentSchema    bool
+	lintCustomSchemaPath string
+	lintNoNetwork        bool
+	rawEmbedSchema       string
+	rulesToExclude       string
+	rulesToExcludePath   string
+	severitiesToInclude  = "CRITICAL,HIGH,MEDIUM,LOW"
+	formatTmpl           string
+	parser               config.Parser
+	run                  func(config.ServiceConfig)
 
 	goSum           = "./go.sum"
 	goVersion       = core.GoVersion
@@ -100,8 +104,12 @@ func init() {
 
 	ginRoutesFlag := BoolFlagBuilder(&checkGinRoutes, "test-gin-routes", "t", false, "Tests the endpoint patterns against a real gin router on the selected port")
 	prefixFlag := StringFlagBuilder(&checkDumpPrefix, "indent", "i", checkDumpPrefix, "Indentation of the check dump")
-	schemaValidationFlag := BoolFlagBuilder(&schemaValidation, "lint", "l", schemaValidation, "Enables the linting against the official online KrakenD JSON schema")
-	CheckCommand = NewCommand(checkCmd, cfgFlag, debugFlag, ginRoutesFlag, prefixFlag, schemaValidationFlag)
+	lintCurrentSchemaFlag := BoolFlagBuilder(&lintCurrentSchema, "lint", "l", lintCurrentSchema, "Enables the linting against the official KrakenD online JSON schema")
+	lintCustomSchemaFlag := StringFlagBuilder(&lintCustomSchemaPath, "lint-schema", "s", lintCustomSchemaPath, "Lint against a custom schema path or URL")
+	lintNoNetworkFlag := BoolFlagBuilder(&lintNoNetwork, "lint-no-network", "n", lintNoNetwork, "Lint against the builtin Krakend JSON schema, no network is required")
+	checkDebugFlag := CountFlagBuilder(&checkDebug, "debug", "d", "Information about how KrakenD is interpreting your configuration file")
+	CheckCommand = NewCommand(checkCmd, cfgFlag, checkDebugFlag, ginRoutesFlag, prefixFlag, lintCurrentSchemaFlag, lintCustomSchemaFlag, lintNoNetworkFlag)
+	CheckCommand.AddConstraint(MutuallyExclusive("lint", "lint-no-network", "lint-schema"))
 
 	portFlag := IntFlagBuilder(&port, "port", "p", 0, "Listening port for the http service")
 	RunCommand = NewCommand(runCmd, cfgFlag, debugFlag, portFlag)
