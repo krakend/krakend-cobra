@@ -36,7 +36,7 @@ type Diff struct {
 
 // Compare generates a list of diffs (incompatibility) between two descriptors
 func (d Descriptor) Compare(other Descriptor) []Diff {
-	diffs := []Diff{}
+	var diffs []Diff
 
 	for pkgName, expectedVersion := range d.Deps {
 		v, ok := other.Deps[pkgName]
@@ -103,7 +103,8 @@ func cleanVersion(v string) string {
 }
 
 func parseSumFile(r io.Reader) ([]string, error) {
-	lines := []string{}
+	var lines []string
+
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
