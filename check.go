@@ -44,7 +44,7 @@ func NewCheckCmd(rawSchema string) Command {
 func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 	if cfgFile == "" {
 		cmd.Println(errorMsg("Please, provide the path to the configuration file with --config or see all the options with --help"))
-		os.Exit(1) // skipcq: RVV-A0003 // skipcq: RVV-A0003
+		os.Exit(1) // skipcq: RVV-A0003
 		return
 	}
 
@@ -53,7 +53,13 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 	v, err := parser.Parse(cfgFile)
 	if err != nil {
 		cmd.Println(errorMsg("ERROR parsing the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
-		os.Exit(1) // skipcq: RVV-A0003 // skipcq: RVV-A0003
+		os.Exit(1) // skipcq: RVV-A0003
+		return
+	}
+
+	if err := CustomValidationFunc(v); err != nil {
+		cmd.Println(errorMsg("ERROR validating the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+		os.Exit(1) // skipcq: RVV-A0003
 		return
 	}
 
@@ -150,6 +156,10 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 		return
 	}
 	cmd.Println("Syntax OK!")
+}
+
+var CustomValidationFunc = func(_ config.ServiceConfig) error {
+	return nil
 }
 
 var RunRouterFunc = func(cfg config.ServiceConfig) (err error) {
