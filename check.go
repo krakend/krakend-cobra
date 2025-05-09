@@ -57,8 +57,13 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 		return
 	}
 
-	if err := CustomValidationFunc(v); err != nil {
-		cmd.Println(errorMsg("ERROR validating the configuration file:") + fmt.Sprintf("\t%s\n", err.Error()))
+	if customErrs := CustomValidationFunc(v); len(customErrs) > 0 {
+		eb := strings.Builder{}
+		for _, err := range customErrs {
+			eb.WriteString(fmt.Sprintf("\t%s\n", err.Error()))
+		}
+
+		cmd.Println(errorMsg("ERROR validating the configuration file:\n") + eb.String())
 		os.Exit(1) // skipcq: RVV-A0003
 		return
 	}
@@ -158,7 +163,7 @@ func checkFunc(cmd *cobra.Command, _ []string) { // skipcq: GO-R1005
 	cmd.Println("Syntax OK!")
 }
 
-var CustomValidationFunc = func(_ config.ServiceConfig) error {
+var CustomValidationFunc = func(_ config.ServiceConfig) []error {
 	return nil
 }
 
