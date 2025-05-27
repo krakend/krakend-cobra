@@ -20,6 +20,5 @@ func runFunc(cmd *cobra.Command, _ []string) {
 	if port != 0 {
 		serviceConfig.Port = port
 	}
-	cmd.Printf("Parsing configuration file: %s\n", cfgFile)
 	run(serviceConfig)
 }
