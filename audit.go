@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	audit "github.com/krakendio/krakend-audit"
+	audit "github.com/krakend/krakend-audit"
 	"github.com/spf13/cobra"
 )
 

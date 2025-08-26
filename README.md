@@ -14,8 +14,8 @@ package main
 import (
 	"os"
 
-	"github.com/krakendio/krakend-cobra/v2"
-	"github.com/krakendio/krakend-viper/v2"
+	"github.com/krakend/krakend-cobra/v2"
+	"github.com/krakend/krakend-viper/v2"
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/logging"
 	"github.com/luraproject/lura/v2/proxy"

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/krakendio/krakend-cobra/v2/dumper"
+	"github.com/krakend/krakend-cobra/v2/dumper"
 	"github.com/santhosh-tekuri/jsonschema/v6"
 
 	"github.com/luraproject/lura/v2/config"

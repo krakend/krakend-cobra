@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/krakendio/krakend-cobra/v2/plugin"
+	"github.com/krakend/krakend-cobra/v2/plugin"
 	"github.com/spf13/cobra"
 	"golang.org/x/mod/modfile"
 )
