@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/krakendio/krakend-cobra/v2/plugin"
+	"github.com/krakend/krakend-cobra/v2/plugin"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 )

@@ -1,19 +1,19 @@
-module github.com/krakendio/krakend-cobra/v2
+module github.com/krakend/krakend-cobra/v2
 
-go 1.23.0
+go 1.23.6
 
-toolchain go1.23.7
+toolchain go1.24.5
 
 require (
 	github.com/gin-gonic/gin v1.9.1
-	github.com/krakendio/krakend-audit v0.0.7
-	github.com/krakendio/krakend-viper/v2 v2.0.1
-	github.com/luraproject/lura/v2 v2.9.0
+	github.com/krakend/krakend-audit v0.3.0
+	github.com/krakend/krakend-viper/v2 v2.1.0
+	github.com/luraproject/lura/v2 v2.11.0
 	github.com/mattn/go-isatty v0.0.20
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/mod v0.17.0
+	golang.org/x/mod v0.25.0
 )
 
 require (
@@ -31,6 +31,7 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/keyvault/internal v0.7.1 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.2 // indirect
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
+	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/aws/aws-sdk-go v1.55.5 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.30.3 // indirect
@@ -54,6 +55,8 @@ require (
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/dlclark/regexp2 v1.11.4 // indirect
+	github.com/fatih/color v1.17.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.7 // indirect
@@ -88,25 +91,31 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
+	github.com/krakend/binder v0.0.0-20250826131726-e91a8a754ef8 // indirect
+	github.com/krakend/bloomfilter/v2 v2.1.0 // indirect
+	github.com/krakend/flatmap v1.2.0 // indirect
 	github.com/krakend/go-auth0/v2 v2.0.1 // indirect
-	github.com/krakendio/bloomfilter/v2 v2.0.4 // indirect
-	github.com/krakendio/flatmap v1.1.1 // indirect
-	github.com/krakendio/krakend-botdetector/v2 v2.1.0 // indirect
-	github.com/krakendio/krakend-circuitbreaker/v2 v2.0.1 // indirect
-	github.com/krakendio/krakend-cors/v2 v2.0.1 // indirect
-	github.com/krakendio/krakend-gelf/v2 v2.0.1 // indirect
-	github.com/krakendio/krakend-gologging/v2 v2.0.3 // indirect
-	github.com/krakendio/krakend-httpsecure/v2 v2.0.1 // indirect
-	github.com/krakendio/krakend-jose/v2 v2.7.0 // indirect
-	github.com/krakendio/krakend-logstash/v2 v2.0.1 // indirect
-	github.com/krakendio/krakend-metrics/v2 v2.0.1 // indirect
-	github.com/krakendio/krakend-opencensus/v2 v2.1.0 // indirect
-	github.com/krakendio/krakend-ratelimit/v3 v3.1.0 // indirect
-	github.com/krakendio/krakend-rss/v2 v2.0.1 // indirect
-	github.com/krakendio/krakend-xml/v2 v2.1.0 // indirect
+	github.com/krakend/httpcache v1.1.0 // indirect
+	github.com/krakend/krakend-botdetector/v2 v2.3.0 // indirect
+	github.com/krakend/krakend-circuitbreaker/v2 v2.1.0 // indirect
+	github.com/krakend/krakend-cors/v2 v2.2.0 // indirect
+	github.com/krakend/krakend-gelf/v2 v2.1.0 // indirect
+	github.com/krakend/krakend-gologging/v2 v2.1.1 // indirect
+	github.com/krakend/krakend-httpcache/v2 v2.2.0 // indirect
+	github.com/krakend/krakend-httpsecure/v2 v2.2.0 // indirect
+	github.com/krakend/krakend-jose/v2 v2.9.0 // indirect
+	github.com/krakend/krakend-logstash/v2 v2.1.0 // indirect
+	github.com/krakend/krakend-lua/v2 v2.9.0 // indirect
+	github.com/krakend/krakend-metrics/v2 v2.1.0 // indirect
+	github.com/krakend/krakend-opencensus/v2 v2.2.0 // indirect
+	github.com/krakend/krakend-ratelimit/v3 v3.3.0 // indirect
+	github.com/krakend/krakend-rss/v2 v2.1.1 // indirect
+	github.com/krakend/krakend-xml/v2 v2.2.0 // indirect
+	github.com/krakend/lru v0.0.0-20250121172718-0e3a6eab620d // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mmcdole/gofeed v1.2.1 // indirect
@@ -136,8 +145,9 @@ require (
 	github.com/tmthrgd/go-popcount v0.0.0-20190904054823-afb1ace8b04f // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
-	github.com/unrolled/secure v1.13.0 // indirect
+	github.com/unrolled/secure v1.15.0 // indirect
 	github.com/valyala/fastrand v1.1.0 // indirect
+	github.com/yuin/gopher-lua v1.1.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.53.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.53.0 // indirect
@@ -146,21 +156,21 @@ require (
 	go.opentelemetry.io/otel/trace v1.28.0 // indirect
 	gocloud.dev v0.39.0 // indirect
 	gocloud.dev/secrets/hashivault v0.39.0 // indirect
-	golang.org/x/arch v0.12.0 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/arch v0.18.0 // indirect
+	golang.org/x/crypto v0.39.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/oauth2 v0.27.0 // indirect
-	golang.org/x/sync v0.12.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/sync v0.15.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
 	golang.org/x/time v0.6.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240716161551-93cc26a95ae9 // indirect
 	google.golang.org/api v0.191.0 // indirect
 	google.golang.org/genproto v0.0.0-20240812133136-8ffd90a71988 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240812133136-8ffd90a71988 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240812133136-8ffd90a71988 // indirect
-	google.golang.org/grpc v1.65.0 // indirect
-	google.golang.org/protobuf v1.35.2 // indirect
+	google.golang.org/grpc v1.66.0 // indirect
+	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/Graylog2/go-gelf.v2 v2.0.0-20191017102106-1550ee647df0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
