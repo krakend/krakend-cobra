@@ -4,7 +4,7 @@ import (
 	"os"
 
 	cmd "github.com/krakend/krakend-cobra/v2"
-	viper "github.com/krakend/krakend-viper/v2"
+	koanf "github.com/krakend/krakend-koanf"
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/logging"
 	"github.com/luraproject/lura/v2/proxy"
@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	cmd.Execute(viper.New(), func(serviceConfig config.ServiceConfig) {
+	cmd.Execute(koanf.New(), func(serviceConfig config.ServiceConfig) {
 		logger, _ := logging.NewLogger("DEBUG", os.Stdout, "")
 		gin.DefaultFactory(proxy.DefaultFactory(logger), logger).New().Run(serviceConfig)
 	})
