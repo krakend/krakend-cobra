@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/luraproject/lura/v2/core"
+	"github.com/luraproject/lura/v3/core"
 	"github.com/spf13/cobra"
 )
 

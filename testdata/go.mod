@@ -1,4 +1,4 @@
-module github.com/krakend/krakend-cobra/v2
+module github.com/krakend/krakend-cobra/v3
 
 go 1.17
 

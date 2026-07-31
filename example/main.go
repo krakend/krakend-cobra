@@ -3,12 +3,12 @@ package main
 import (
 	"os"
 
-	cmd "github.com/krakend/krakend-cobra/v2"
-	koanf "github.com/krakend/krakend-koanf"
-	"github.com/luraproject/lura/v2/config"
-	"github.com/luraproject/lura/v2/logging"
-	"github.com/luraproject/lura/v2/proxy"
-	"github.com/luraproject/lura/v2/router/gin"
+	cmd "github.com/krakend/krakend-cobra/v3"
+	koanf "github.com/krakend/krakend-koanf/v2"
+	"github.com/luraproject/lura/v3/config"
+	"github.com/luraproject/lura/v3/logging"
+	"github.com/luraproject/lura/v3/proxy"
+	"github.com/luraproject/lura/v3/router/gin"
 )
 
 func main() {
