@@ -10,14 +10,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/krakend/krakend-cobra/v2/dumper"
+	"github.com/krakend/krakend-cobra/v3/dumper"
 	"github.com/santhosh-tekuri/jsonschema/v6"
 
-	"github.com/luraproject/lura/v2/config"
-	"github.com/luraproject/lura/v2/core"
-	"github.com/luraproject/lura/v2/logging"
-	"github.com/luraproject/lura/v2/proxy"
-	krakendgin "github.com/luraproject/lura/v2/router/gin"
+	"github.com/luraproject/lura/v3/config"
+	"github.com/luraproject/lura/v3/core"
+	"github.com/luraproject/lura/v3/logging"
+	"github.com/luraproject/lura/v3/proxy"
+	krakendgin "github.com/luraproject/lura/v3/router/gin"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
