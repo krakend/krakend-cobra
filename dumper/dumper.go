@@ -46,7 +46,7 @@ type Dumper struct {
 	colorWhite      string
 }
 
-func (c Dumper) Dump(v config.ServiceConfig) error {
+func (c Dumper) Dump(v config.ServiceConfig) error { // skipcq: GO-R1005
 	c.cmd.Printf("%sGlobal settings%s\n", c.colorGreen, c.colorReset)
 	c.cmd.Printf("%sName: %s\n", c.checkDumpPrefix, v.Name)
 	c.cmd.Printf("%sVersion: %d\n", c.checkDumpPrefix, v.Version)
@@ -123,9 +123,15 @@ func (c Dumper) Dump(v config.ServiceConfig) error {
 		}
 	}
 
-	if v.Plugin != nil {
-		c.cmd.Printf("%sFolder: %s\n", c.checkDumpPrefix, v.Plugin.Folder)
-		c.cmd.Printf("%sPattern: %s\n", c.checkDumpPrefix, v.Plugin.Pattern)
+	if p, ok := v.ExtraConfig["plugin"]; ok {
+		if plugin, ok := p.(map[string]interface{}); ok {
+			if folder, ok := plugin["folder"]; ok {
+				c.cmd.Printf("%sPlugin folder: %s\n", c.checkDumpPrefix, folder)
+			}
+			if pattern, ok := plugin["pattern"]; ok {
+				c.cmd.Printf("%sPlugin pattern: %s\n", c.checkDumpPrefix, pattern)
+			}
+		}
 	} else if c.verboseLevel > 1 {
 		c.cmd.Printf("%s%sNo Plugin section defined%s\n", c.checkDumpPrefix, c.colorRed, c.colorReset)
 	}
