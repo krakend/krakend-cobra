@@ -46,7 +46,7 @@ type Dumper struct {
 	colorWhite      string
 }
 
-func (c Dumper) Dump(v config.ServiceConfig) error {
+func (c Dumper) Dump(v config.ServiceConfig) error { // skipcq: GO-R1005
 	c.cmd.Printf("%sGlobal settings%s\n", c.colorGreen, c.colorReset)
 	c.cmd.Printf("%sName: %s\n", c.checkDumpPrefix, v.Name)
 	c.cmd.Printf("%sVersion: %d\n", c.checkDumpPrefix, v.Version)
