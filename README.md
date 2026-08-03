@@ -34,12 +34,11 @@ func main() {
 
 ## Available commands
 
-The `cmd` package includes four commands: `check`, `check-plugin`, `help` and `run`.
+The `cmd` package includes four commands: `check`, `help` and `run`.
 
 1. *check* validates the received config file.
-2. *check-plugin* validates the dependencies shared between the binary and a plugin.
-3. *help* displays details about any command.
-4. *run* executes the passed executor once the received flags overwrite the parsed config.
+2. *help* displays details about any command.
+3. *run* executes the passed executor once the received flags overwrite the parsed config.
 
 ```
 $ ./krakend
@@ -59,7 +58,6 @@ Usage:
 
 Available Commands:
   check        Validates that the configuration file is valid.
-  check-plugin Checks your plugin dependencies are compatible.
   help         Help about any command
   run          Runs the KrakenD server.
 
