@@ -14,17 +14,17 @@ package main
 import (
 	"os"
 
-	"github.com/krakend/krakend-cobra/v2"
-	"github.com/krakend/krakend-viper/v2"
-	"github.com/luraproject/lura/v2/config"
-	"github.com/luraproject/lura/v2/logging"
-	"github.com/luraproject/lura/v2/proxy"
-	krakendgin "github.com/luraproject/lura/v2/router/gin"
+	"github.com/krakend/krakend-cobra/v3"
+	"github.com/krakend/krakend-koanf/v2"
+	"github.com/luraproject/lura/v3/config"
+	"github.com/luraproject/lura/v3/logging"
+	"github.com/luraproject/lura/v3/proxy"
+	krakendgin "github.com/luraproject/lura/v3/router/gin"
 )
 
 func main() {
 
-	cmd.Execute(viper.New(), func(serviceConfig config.ServiceConfig) {
+	cmd.Execute(koanf.New(), func(serviceConfig config.ServiceConfig) {
 		logger, _ := logging.NewLogger("DEBUG", os.Stdout, "")
 		krakendgin.DefaultFactory(proxy.DefaultFactory(logger), logger).New().Run(serviceConfig)
 	})
@@ -34,7 +34,7 @@ func main() {
 
 ## Available commands
 
-The `cmd` package includes four commands: `check`, `help` and `run`.
+The `cmd` package includes four commands: `check`, `version`, `audit`, `help` and `run`.
 
 1. *check* validates the received config file.
 2. *help* displays details about any command.
@@ -42,24 +42,26 @@ The `cmd` package includes four commands: `check`, `help` and `run`.
 
 ```
 $ ./krakend
- ╓▄█                          ▄▄▌                               ╓██████▄µ
+ ╓▄█                          ▄▄▌                               ╓██████▄µ  
 ▐███  ▄███╨▐███▄██H╗██████▄  ║██▌ ,▄███╨ ▄██████▄  ▓██▌█████▄  ███▀╙╙▀▀███╕
 ▐███▄███▀  ▐█████▀"╙▀▀"╙▀███ ║███▄███┘  ███▀""▀███ ████▀╙▀███H ███     ╙███
 ▐██████▌   ▐███⌐  ,▄████████M║██████▄  ║██████████M███▌   ███H ███     ,███
 ▐███╨▀███µ ▐███   ███▌  ,███M║███╙▀███  ███▄```▄▄` ███▌   ███H ███,,,╓▄███▀
-▐███  ╙███▄▐███   ╙█████████M║██▌  ╙███▄`▀███████╨ ███▌   ███H █████████▀
-                     ``                     `'`
+▐███  ╙███▄▐███   ╙█████████M║██▌  ╙███▄`▀███████╨ ███▌   ███H █████████▀  
+                     ``                     `'`                            
 Version: undefined
 
-The API Gateway builder
+KrakenD is a high-performance API gateway that helps you publish, secure, control, and monitor your services
 
 Usage:
   krakend [command]
 
 Available Commands:
-  check        Validates that the configuration file is valid.
-  help         Help about any command
-  run          Runs the KrakenD server.
+  audit       Audits a KrakenD configuration.
+  check       Validates that the configuration file is valid.
+  help        Help about any command
+  run         Runs the KrakenD server.
+  version     Shows KrakenD version.
 
 Flags:
   -h, --help   help for krakend

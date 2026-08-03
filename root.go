@@ -30,11 +30,7 @@ var (
 	parser               config.Parser
 	run                  func(config.ServiceConfig)
 
-	goSum           = "./go.sum"
-	goVersion       = core.GoVersion
-	libcVersion     = core.GlibcVersion
 	checkDumpPrefix = "\t"
-	gogetEnabled    = false
 
 	DefaultRoot    Root
 	RootCommand    Command
