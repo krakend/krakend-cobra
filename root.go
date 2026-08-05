@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/luraproject/lura/v2/config"
-	"github.com/luraproject/lura/v2/core"
+	"github.com/luraproject/lura/v3/config"
+	"github.com/luraproject/lura/v3/core"
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 )
