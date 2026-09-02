@@ -4,9 +4,9 @@ go 1.25.3
 
 require (
 	github.com/gin-gonic/gin v1.12.0
-	github.com/krakend/krakend-audit/v2 v2.0.0-20260803084007-b9a26f85e2f6
+	github.com/krakend/krakend-audit/v2 v2.0.0-20260902094227-78200c69b280
 	github.com/krakend/krakend-koanf/v2 v2.0.0-20260730113626-abc2e1ee616d
-	github.com/luraproject/lura/v3 v3.0.0-20260729150645-8c91935f50b2
+	github.com/luraproject/lura/v3 v3.0.0-20260902072206-0538f09374cc
 	github.com/mattn/go-isatty v0.0.20
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1
 	github.com/spf13/cobra v1.8.1
