@@ -46,6 +46,42 @@ type Dumper struct {
 	colorWhite      string
 }
 
+type additionalEntry struct {
+	text  string
+	level string
+}
+
+type additionalServiceDump struct {
+	entries [][]additionalEntry
+}
+
+func NewAdditionalServiceDump() *additionalServiceDump {
+	return &additionalServiceDump{
+		entries: [][]additionalEntry{make([]additionalEntry, 0), make([]additionalEntry, 0), make([]additionalEntry, 0)},
+	}
+}
+
+func (d *additionalServiceDump) Info(text string, verboseLevel int) {
+	d.Add(text, "info", verboseLevel)
+}
+
+func (d *additionalServiceDump) Warn(text string, verboseLevel int) {
+	d.Add(text, "warn", verboseLevel)
+}
+
+func (d *additionalServiceDump) Error(text string, verboseLevel int) {
+	d.Add(text, "error", verboseLevel)
+}
+
+func (d *additionalServiceDump) Add(text, level string, verboseLevel int) {
+	if verboseLevel > 2 {
+		return
+	}
+	d.entries[verboseLevel] = append(d.entries[verboseLevel], additionalEntry{text: text, level: level})
+}
+
+var AdditionalServiceDumps = NewAdditionalServiceDump()
+
 func (c Dumper) Dump(v config.ServiceConfig) error { // skipcq: GO-R1005
 	c.cmd.Printf("%sGlobal settings%s\n", c.colorGreen, c.colorReset)
 	c.cmd.Printf("%sName: %s\n", c.checkDumpPrefix, v.Name)
@@ -123,17 +159,22 @@ func (c Dumper) Dump(v config.ServiceConfig) error { // skipcq: GO-R1005
 		}
 	}
 
-	if p, ok := v.ExtraConfig["plugin"]; ok {
-		if plugin, ok := p.(map[string]interface{}); ok {
-			if folder, ok := plugin["folder"]; ok {
-				c.cmd.Printf("%sPlugin folder: %s\n", c.checkDumpPrefix, folder)
-			}
-			if pattern, ok := plugin["pattern"]; ok {
-				c.cmd.Printf("%sPlugin pattern: %s\n", c.checkDumpPrefix, pattern)
-			}
+	for v := range AdditionalServiceDumps.entries {
+		if c.verboseLevel < v {
+			continue
 		}
-	} else if c.verboseLevel > 1 {
-		c.cmd.Printf("%s%sNo Plugin section defined%s\n", c.checkDumpPrefix, c.colorRed, c.colorReset)
+		for _, dump := range AdditionalServiceDumps.entries[v] {
+			color := c.colorReset
+			switch dump.level {
+			case "info":
+				color = c.colorReset
+			case "warn":
+				color = c.colorYellow
+			case "error":
+				color = c.colorRed
+			}
+			c.cmd.Printf("%s%s%s%s\n", c.checkDumpPrefix, color, dump.text, c.colorReset)
+		}
 	}
 
 	if c.verboseLevel > 1 || len(v.ExtraConfig) > 0 {
