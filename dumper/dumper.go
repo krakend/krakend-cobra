@@ -55,7 +55,7 @@ type additionalServiceDump struct {
 	entries [][]additionalEntry
 }
 
-func NewAdditionalServiceDump() *additionalServiceDump {
+func newAdditionalServiceDump() *additionalServiceDump {
 	return &additionalServiceDump{
 		entries: [][]additionalEntry{make([]additionalEntry, 0), make([]additionalEntry, 0), make([]additionalEntry, 0)},
 	}
@@ -80,7 +80,7 @@ func (d *additionalServiceDump) Add(text, level string, verboseLevel int) {
 	d.entries[verboseLevel] = append(d.entries[verboseLevel], additionalEntry{text: text, level: level})
 }
 
-var AdditionalServiceDumps = NewAdditionalServiceDump()
+var AdditionalServiceDumps = newAdditionalServiceDump()
 
 func (c Dumper) Dump(v config.ServiceConfig) error { // skipcq: GO-R1005
 	c.cmd.Printf("%sGlobal settings%s\n", c.colorGreen, c.colorReset)
